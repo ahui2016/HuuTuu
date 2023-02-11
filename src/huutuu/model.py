@@ -3,20 +3,29 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .database import Base
 
 
+'''
+class Metadata(Base):
+    __tablename__ = 'metadata'
+    name: Mapped[str] = mapped_column(primary_key=True)
+    val_str: Mapped[str] = ''
+    val_int: Mapped[int] = 0
+'''
+
+
 class Record(Base):
-    __tablename__ = "record"
+    __tablename__ = 'record'
 
     # 時間戳
     id: Mapped[int] = mapped_column(primary_key=True)
 
     # 時間戳
-    dt    : Mapped[int] = mapped_column(index=True)
+    dt: Mapped[int] = mapped_column(index=True)
     
     # 支出金額
     amount: Mapped[int]
 
     # 备注
-    notes : Mapped[str]
+    notes: Mapped[str]
 
     # 標籤
     label_id: Mapped[int] = mapped_column(ForeignKey('label.id'))
@@ -24,7 +33,7 @@ class Record(Base):
 
 
 class Label(Base):
-    __tablename__ = "label"
+    __tablename__ = 'label'
 
     id: Mapped[int] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(unique=True)

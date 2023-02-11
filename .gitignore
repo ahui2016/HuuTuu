@@ -1,2 +1,4 @@
 
 env/
+.idea/
+src/huutuu/__pycache__/
