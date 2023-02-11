@@ -2,9 +2,9 @@ from pydantic import BaseModel
 
 
 class RecordBase(BaseModel):
-    dt    : int       # 時間戳
-    amount: int = 0   # 支出金額
-    notes : str = ''  # 备注
+    amount  : int       # 支出金額
+    notes   : str = ''  # 备注
+    label_id: int
 
 
 class RecordCreate(RecordBase):
@@ -12,8 +12,8 @@ class RecordCreate(RecordBase):
 
 
 class Record(RecordBase):
-    id: int
-    label_id: int
+    id: int  # 時間戳
+    dt: int  # 時間戳
 
     class Config:
         orm_mode = True
@@ -28,6 +28,13 @@ class LabelCreate(LabelBase):
 
 
 class Label(LabelBase):
+    id: int
+
+    class Config:
+        orm_mode = True
+
+
+class LabelWithRecords(LabelBase):
     id: int
     records: list[Record] = []
 

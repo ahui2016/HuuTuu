@@ -1,3 +1,5 @@
+from typing import Sequence
+
 import arrow
 from sqlalchemy import select
 from sqlalchemy.orm import Session
@@ -23,6 +25,11 @@ def get_label_by_name(db: Session, name: str) -> model.Label | None:
         select(model.Label).where(model.Label.name == name))
 
 
+def get_label(db: Session, label_id: int) -> model.Label | None:
+    return db.scalar(
+        select(model.Label).where(model.Label.id == label_id))
+
+
 def create_label(db: Session, label: forms.LabelCreate) -> model.Label:
     label_id = get_labels_next_id(db)
     db_label = model.Label(id=label_id, name=label.name)
@@ -32,14 +39,25 @@ def create_label(db: Session, label: forms.LabelCreate) -> model.Label:
     return db_label
 
 
-def create_record(
-        db: Session, record: forms.RecordCreate, label_id: int) -> model.Record:
-    record_id = now()
-    db_record = model.Record(**record.dict(), id=record_id, label_id=label_id)
+def create_record(db: Session, record: forms.RecordCreate) -> model.Record:
+    dt = now()
+    db_record = model.Record(**record.dict(), id=dt, dt=dt)
     db.add(db_record)
     db.commit()
     db.refresh(db_record)
     return db_record
+
+
+def get_all_records(
+        db: Session, skip: int = 0, limit: int = 100
+) -> Sequence[model.Record]:
+    return db.scalars(select(model.Record).offset(skip).limit(limit)).all()
+
+
+def get_all_labels(
+        db: Session, skip: int = 0, limit: int = 100
+) -> Sequence[model.Label]:
+    return db.scalars(select(model.Label).offset(skip).limit(limit)).all()
 
 
 def now() -> int:
