@@ -32,7 +32,7 @@ def get_label(db: Session, label_id: int) -> model.Label | None:
 
 def create_label(db: Session, label: forms.LabelCreate) -> model.Label:
     label_id = get_labels_next_id(db)
-    db_label = model.Label(id=label_id, name=label.name)
+    db_label = model.Label(id=label_id, dt=now(), name=label.name)
     db.add(db_label)
     db.commit()
     db.refresh(db_label)
@@ -57,7 +57,11 @@ def get_all_records(
 def get_all_labels(
         db: Session, skip: int = 0, limit: int = 100
 ) -> Sequence[model.Label]:
-    return db.scalars(select(model.Label).offset(skip).limit(limit)).all()
+    return db.scalars(select(model.Label)
+        .order_by(model.Label.dt.desc())
+        .offset(skip)
+        .limit(limit)
+    ).all()
 
 
 def now() -> int:

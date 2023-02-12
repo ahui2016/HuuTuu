@@ -3,13 +3,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .database import Base
 
 
-'''
 class Metadata(Base):
     __tablename__ = 'metadata'
     name: Mapped[str] = mapped_column(primary_key=True)
     val_str: Mapped[str] = ''
     val_int: Mapped[int] = 0
-'''
 
 
 class Record(Base):
@@ -35,6 +33,7 @@ class Record(Base):
 class Label(Base):
     __tablename__ = 'label'
 
-    id: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[int] = mapped_column(primary_key=True)  # 自增
+    dt: Mapped[int] = mapped_column(index=True)        # 時間戳
     name: Mapped[str] = mapped_column(unique=True)
-    records: Mapped[list['Record']] = relationship(back_populates='label')
+    records: Mapped[list[Record]] = relationship(back_populates='label')

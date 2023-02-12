@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from sqlalchemy.orm import Session
 
 from . import model, forms, crud
@@ -8,6 +10,12 @@ from .database import engine, SessionLocal
 model.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+app.mount('/public', StaticFiles(directory='src/public'), name='public')
+
+
+@app.get('/')
+def homepage():
+    return RedirectResponse('/public/index.html')
 
 
 # https://fastapi.tiangolo.com/tutorial/sql-databases/

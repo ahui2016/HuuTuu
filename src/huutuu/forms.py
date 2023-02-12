@@ -28,14 +28,16 @@ class LabelCreate(LabelBase):
 
 
 class Label(LabelBase):
-    id: int
+    id: int  # 自增
+    dt: int  # 時間戳
 
     class Config:
         orm_mode = True
 
 
 class LabelWithRecords(LabelBase):
-    id: int
+    id: int  # 自增
+    dt: int  # 時間戳
     records: list[Record] = []
 
     class Config:
