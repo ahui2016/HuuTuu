@@ -1,3 +1,11 @@
+const NaviBar = cc("div", {
+  children: [
+    createLinkElem("index.html", { text: "HuuTuu" }),
+    span(" .. "),
+    span("Create Label (新建標籤)"),
+  ],
+});
+
 const NameInput = createInput();
 const SubmitBtn = cc("button", { text: "Create", classes: "btn btn-primary" });
 
@@ -18,9 +26,14 @@ const Form = cc("form", {
   ],
 });
 
-$("#root").append(m(Form));
+Form.init = () => {
+  focus(NameInput);
+};
+
+$("#root").append(m(NaviBar).addClass("my-3"), m(Form));
 
 init();
 
 function init() {
+  Form.init();
 }

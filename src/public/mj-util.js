@@ -73,6 +73,33 @@ function appendToList(list, items) {
 }
 
 /**
+ * @param {mjElement | mjComponent} obj
+ * @param {number?} timeout default=300
+ */
+function focus(obj, timeout = 300) {
+  if ("elem" in obj) obj = obj.elem();
+  setTimeout(() => {
+    obj.trigger("focus");
+  }, timeout);
+}
+
+/**
+ * @param {string} href
+ * @param {LinkOptions?} options `{text?: string, title?: string, blank?: 'blank'}`
+ * @returns {mjElement}
+ */
+function createLinkElem(href, options) {
+  if (!options) {
+    return m("a").text(href).attr("href", href);
+  }
+  if (!options.text) options.text = href;
+  const link = m("a").text(options.text).attr("href", href);
+  if (options.title) link.attr("title", options.title);
+  if (options.blank == "blank") link.attr("target", "_blank");
+  return link;
+}
+
+/**
  * @param {string} type default = "text"
  * @returns {mjComponent}
  */
