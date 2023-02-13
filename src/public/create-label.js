@@ -6,7 +6,8 @@ const NaviBar = cc("div", {
   ],
 });
 
-const NameInput = createInput();
+const FormAlert = createAlert();
+const NameInput = createInput("text", "required");
 const SubmitBtn = cc("button", { text: "Create", classes: "btn btn-primary" });
 
 // 这个按钮是隐藏不用的，为了防止按回车键提交表单
@@ -22,7 +23,22 @@ const Form = cc("form", {
         e.preventDefault();
         return false;
       }),
-    m(SubmitBtn),
+    m(FormAlert).addClass('my-1'),
+    m(SubmitBtn).on("click", (event) => {
+      event.preventDefault();
+      const name = valOf(NameInput, 'trim');
+      if (!name) {
+        FormAlert.insert('warning', '必須填寫標籤名');
+        focus(NameInput);
+        return;
+      }
+      axiosPost('/api/create-label', {name: name}, FormAlert, resp => {
+        const label = resp.data;
+        FormAlert.insert('success', `成功創建 Label {id: ${label.id}, name: ${label.name}}`)
+        NameInput.elem().val('');
+        focus(NameInput);
+      });
+    }),
   ],
 });
 

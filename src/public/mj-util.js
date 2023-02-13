@@ -74,6 +74,16 @@ function appendToList(list, items) {
 
 /**
  * @param {mjElement | mjComponent} obj
+ * @param {"trim"?} trim
+ * @returns {string}
+ */
+function valOf(obj, trim) {
+  let s = "elem" in obj ? obj.elem().val() : obj.val();
+  return trim == "trim" ? s.trim() : s;
+}
+
+/**
+ * @param {mjElement | mjComponent} obj
  * @param {number?} timeout default=300
  */
 function focus(obj, timeout = 300) {
@@ -81,6 +91,47 @@ function focus(obj, timeout = 300) {
   setTimeout(() => {
     obj.trigger("focus");
   }, timeout);
+}
+
+/**
+ * msgType: primary/secondary/success/danger/warning/info/light/dark
+ */
+function createAlert() {
+  const alert = cc("div");
+
+  alert.insertElem = (elem) => {
+    alert.elem().prepend(elem);
+  };
+
+  /**
+   * msgType: primary/secondary/success/danger/warning/info/light/dark
+   * @param {string} msgType
+   * @param {string} msg
+   */
+  alert.insert = (msgType, msg) => {
+    const time = dayjs().format("HH:mm:ss");
+    const timeMsg = `${time} ${msg}`;
+    if (msgType == "danger") console.log(timeMsg);
+
+    const dismissBtn = m("button").addClass("btn-close").attr({
+      type: "button",
+      "data-bs-dismiss": "alert",
+      "aria-label": "Close",
+    });
+
+    const elem = m("div")
+      .addClass(`alert alert-${msgType} alert-dismissible fade show my-1`)
+      .attr({role: 'alert'})
+      .append(span(timeMsg), dismissBtn);
+
+    alert.insertElem(elem);
+  };
+
+  alert.clear = () => {
+    alert.elem().html("");
+  };
+
+  return alert;
 }
 
 /**
@@ -101,10 +152,17 @@ function createLinkElem(href, options) {
 
 /**
  * @param {string} type default = "text"
+ * @param {'required'?} required
+ * @param {string?} id
  * @returns {mjComponent}
  */
-function createInput(type = "text", id = null) {
-  return cc("input", { id: id, classes: "form-control", attr: { type: type } });
+function createInput(type = "text", required = null, id = null) {
+  return cc("input", {
+    id: id,
+    classes: "form-control",
+    attr: { type: type },
+    prop: { required: required == "required" ? true : false },
+  });
 }
 
 /**
@@ -147,4 +205,52 @@ function createFormControl(comp, labelText, description, classes = "mb-3") {
   }
   formControl.append(descElem);
   return formControl;
+}
+
+/**
+ * https://axios-http.com/docs/handling_errors
+ * @param {AxiosError} err
+ * @returns {string}
+ */
+function axiosErrToStr(err) {
+  if (err.response) {
+    // err.response.data.detail 裏的 detail 與後端對應.
+    return `[${err.response.status}] ${err.response.data.detail}`;
+  }
+  if (err.request) {
+    return (
+      err.request.status + ":The request was made but no response was received."
+    );
+  }
+  return err.message;
+}
+
+/**
+ * axios get with default error handler.
+ */
+function axiosGet(url, alert, onSuccess, onAlways) {
+  axios
+    .get(url)
+    .then(onSuccess)
+    .catch((err) => {
+      alert.insert("danger", axiosErrToStr(err));
+    })
+    .then(() => {
+      if (onAlways) onAlways();
+    });
+}
+
+/**
+ * axios post with default error handler.
+ */
+function axiosPost(url, body, alert, onSuccess, onAlways) {
+  axios
+    .post(url, body)
+    .then(onSuccess)
+    .catch((err) => {
+      alert.insert("danger", axiosErrToStr(err));
+    })
+    .then(() => {
+      if (onAlways) onAlways();
+    });
 }
