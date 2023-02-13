@@ -9,12 +9,10 @@ from .database import engine
 model.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
-app.mount('/public', StaticFiles(directory='src/public'), name='public')
 app.include_router(api.router)
+app.mount('/public', StaticFiles(directory='src/public'), name='public')
 
 
 @app.get('/')
 def homepage():
     return RedirectResponse('/public/index.html')
-
-
