@@ -1,7 +1,3 @@
-// 这些 class 只是为了方便生成文档，不实际使用。
-class LinkOptions {}
-class AxiosError {}
-
 /**
  * 获取地址栏的参数。
  * @param {string} name
@@ -121,7 +117,7 @@ function createAlert() {
 
     const elem = m("div")
       .addClass(`alert alert-${msgType} alert-dismissible fade show my-1`)
-      .attr({role: 'alert'})
+      .attr({ role: "alert" })
       .append(span(timeMsg), dismissBtn);
 
     alert.insertElem(elem);
@@ -205,6 +201,32 @@ function createFormControl(comp, labelText, description, classes = "mb-3") {
   }
   formControl.append(descElem);
   return formControl;
+}
+
+/**
+ * 如果 id 以数字开头，就需要使用 elemID 给它改成以字母开头，
+ * 因为 DOM 的 ID 不允许以数字开头。
+ * @param {string} id
+ * @param {string} prefix
+ * @returns {string}
+ */
+function elemID(id, prefix = 'e') {
+  return `${prefix}${id}`;
+}
+
+/**
+ * @param {string} text
+ * @param {mjComponent?} alert
+ */
+function copyToClipboard(text, alert) {
+  navigator.clipboard.writeText(text).then(
+    () => {
+      if (alert) alert.insert("success", "複製成功");
+    },
+    () => {
+      if (alert) alert.insert("danger", "複製失敗");
+    }
+  );
 }
 
 /**

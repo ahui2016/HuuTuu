@@ -1,6 +1,7 @@
 from typing import Sequence
 
 import arrow
+from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
@@ -24,18 +25,16 @@ def get_label_by_name(db: Session, name: str) -> model.Label | None:
     return db.scalar(
         select(model.Label).where(model.Label.name == name))
 
-
+'''
 def get_label(db: Session, label_id: int) -> model.Label | None:
-    return db.scalar(
-        select(model.Label).where(model.Label.id == label_id))
-
+    return db.get(model.Label, label_id)
+'''
 
 def create_label(db: Session, label: forms.LabelCreate) -> model.Label:
     label_id = get_labels_next_id(db)
     db_label = model.Label(id=label_id, dt=now(), name=label.name)
     db.add(db_label)
     db.commit()
-    db.refresh(db_label)
     return db_label
 
 
@@ -43,8 +42,14 @@ def create_record(db: Session, record: forms.RecordCreate) -> model.Record:
     dt = now()
     db_record = model.Record(**record.dict(), id=dt, dt=dt)
     db.add(db_record)
+    db.flush()
+
+    if not db_record.label:
+        raise HTTPException(
+            status_code=404, detail=f'Label ID Not Found: {record.label_id}')
+
+    db_record.label.dt = dt
     db.commit()
-    db.refresh(db_record)
     return db_record
 
 

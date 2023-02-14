@@ -39,10 +39,6 @@ def get_label_by_name(label: forms.LabelCreate, db: Session = Depends(get_db)):
 
 @router.post('/create-record', response_model=forms.Record)
 def create_record(record: forms.RecordCreate, db: Session = Depends(get_db)):
-    db_label = crud.get_label(db, record.label_id)
-    if not db_label:
-        raise HTTPException(
-            status_code=404, detail=f'Label ID Not Found: {record.label_id}')
     return crud.create_record(db, record)
 
 
@@ -53,6 +49,6 @@ def get_all_records(
 
 
 @router.get('/all-labels', response_model=list[forms.Label])
-def get_all_records(
+def get_all_labels(
         skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_all_labels(db, skip=skip, limit=limit)

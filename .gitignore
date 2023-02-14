@@ -2,4 +2,4 @@
 env/
 .idea/
 src/huutuu/__pycache__/
-huutuu.db
+*.db
