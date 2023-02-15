@@ -1,4 +1,4 @@
-// from create-label.js import CreateLabelForm
+// from create-label.js import formWithAlert_CreateLabel
 // from label-list.js import LabelList, LabelListAlert, LabelItem
 
 const pageTitle = m("h5").text("HuuTuu").addClass("display-5");
@@ -9,7 +9,7 @@ const pageTitleArea = m("div")
 
 $("#root").append(
   pageTitleArea.addClass("my-5"),
-  m(CreateLabelForm).addClass('my-3'),
+  formWithAlert_CreateLabel.addClass('my-3'),
   m(LabelList).addClass("my-3"),
   m(LabelListAlert).addClass("my-3")
 );

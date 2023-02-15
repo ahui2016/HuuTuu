@@ -204,13 +204,40 @@ function createFormControl(comp, labelText, description, classes = "mb-3") {
 }
 
 /**
+ * 这个按钮是隐藏不用的，为了防止按回车键提交表单
+ */
+function hiddenButtonElem() {
+  return m("button")
+    .text("submit")
+    .hide()
+    .on("click", (e) => {
+      e.preventDefault();
+      return false;
+    });
+}
+
+/**
+ * color: primary, secondary, success, danger, warning, info, light, dark
+ * @param {string} name
+ * @param {string} color
+ * @returns {mjComponent}
+ */
+function createButton(name, color) {
+  return cc("button", {
+    text: name,
+    classes: `btn btn-${color}`,
+    attr: { type: "button" },
+  });
+}
+
+/**
  * 如果 id 以数字开头，就需要使用 elemID 给它改成以字母开头，
  * 因为 DOM 的 ID 不允许以数字开头。
  * @param {string} id
  * @param {string} prefix
  * @returns {string}
  */
-function elemID(id, prefix = 'e') {
+function elemID(id, prefix = "e") {
   return `${prefix}${id}`;
 }
 
