@@ -217,7 +217,7 @@ function hiddenButtonElem() {
 }
 
 /**
- * color: primary, secondary, success, danger, warning, info, light, dark
+ * color: primary, secondary, success, danger, warning, info, light, dark, link
  * @param {string} name
  * @param {string} color
  * @returns {mjComponent}

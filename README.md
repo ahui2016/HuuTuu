@@ -57,6 +57,15 @@
 
 我要寫的只是 "檢測文件夾內有無同名圖片文件" 的代碼而已.
 
+## Install
+
+先進入虛擬環境.
+
+1. `pip install fastapi`
+2. `pip install "uvicorn[standard]"`
+3. `pip install SQLAlchemy`
+4. `pip install arrow`
+
 ## Run
 
 ```shell

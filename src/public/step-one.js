@@ -1,3 +1,25 @@
+const LabelList = cc("div", { classes: 'd-flex gap-3' });
+
+/**
+ * @param {Label} label
+ * @returns {mjComponent}
+ */
+function LabelItem(label) {
+  const self = cc("button", {
+    id: elemID(label.id, "label"),
+    text: label.name,
+    classes: "btn rounded-pill btn-primary",
+  });
+
+  self.init = () => {
+    self.elem().on("click", (event) => {
+      event.preventDefault();
+    });
+  };
+
+  return self;
+}
+
 const FormAlert_CreateLabel = createAlert();
 const LabelNameInput = createInput("text", "required");
 const CreateLabelBtn = createButton('Create', 'primary');
@@ -11,12 +33,12 @@ const Form_CreateLabel = cc("form", {
         // label
         m("span")
           .addClass('input-group-text')
-          .text("Label Name"),
+          .text("New Label"),
 
         // text input
         m(LabelNameInput)
           .addClass("form-control")
-          .attr({ placeholder: "標籤名" }),
+          .attr({ placeholder: "新標籤" }),
 
         // hidden button
         hiddenButtonElem(),
@@ -40,6 +62,8 @@ const Form_CreateLabel = cc("form", {
                 "success",
                 `成功創建 Label {id: ${label.id}, name: ${label.name}}`
               );
+              Item = LabelItem(label);
+              LabelList.elem().prepend(m(Item));
               LabelNameInput.elem().val("");
               focus(LabelNameInput);
             }
@@ -49,7 +73,27 @@ const Form_CreateLabel = cc("form", {
   ],
 });
 
-const formWithAlert_CreateLabel = m("div").append(
-  m(Form_CreateLabel),
-  m(FormAlert_CreateLabel).addClass("row my-1")
-);
+const FormArea_CreateLabel = cc("div", {
+  children: [
+    m(Form_CreateLabel),
+    m(FormAlert_CreateLabel).addClass("row my-1")
+  ]
+});
+
+const ToggleCreateLabelBtn = createButton('新建標籤', 'link');
+
+const StepOne = cc('div', {
+  children: [
+    m('h3').text('Step One (第一步)'),
+    m('p').append(
+      span('請點撃標籤, 或'),
+      m(ToggleCreateLabelBtn).on('click', event => {
+        event.preventDefault();
+        FormArea_CreateLabel.show();
+        focus(LabelNameInput);
+      }),
+    ),
+    m(FormArea_CreateLabel).addClass("my-3").hide(),
+    m(LabelList).addClass("my-3"),
+  ]
+});
