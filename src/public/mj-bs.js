@@ -209,6 +209,7 @@ function createFormControl(comp, labelText, description, classes = "mb-3") {
 function hiddenButtonElem() {
   return m("button")
     .text("submit")
+    .attr({ type: "submit" })
     .hide()
     .on("click", (e) => {
       e.preventDefault();
@@ -302,4 +303,12 @@ function axiosPost(url, body, alert, onSuccess, onAlways) {
     .then(() => {
       if (onAlways) onAlways();
     });
+}
+
+/**
+ * @param {string} s
+ * @returns {boolean}
+ */
+function hasWhiteSpace(s) {
+  return /\s/g.test(s);
 }

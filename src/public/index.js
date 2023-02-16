@@ -10,18 +10,50 @@ const pageTitleArea = m("div")
   .append(pageTitle, pageSubtitle)
   .addClass("text-center");
 
+const AppSubmitBtn = createButton("submit", "primary");
+const AppCancelBtn = createButton("cancel", "secondary");
+
+const RecordArea = cc("div", {
+  classes: "card border-secondary mx-auto",
+  attr: { style: "max-width: 28rem;" },
+  children: [
+    m("div")
+      .addClass("card-body text-dark")
+      .append(
+        m("h4").addClass("card-title"),
+        m("p").addClass("text-muted").text("第二步: 請選擇金額"),
+        m("p").addClass("card-text").hide(),
+        m("div")
+          .addClass("text-end")
+          .append(
+            m(AppSubmitBtn).addClass("me-1"),
+            m(AppCancelBtn).on("click", (event) => {
+              event.preventDefault();
+              RecordArea.elem().fadeOut("fast");
+              StepTwo.elem().fadeOut("fast", () => {
+                window.location.reload();
+              });
+          })
+          )
+      ),
+  ],
+});
+
 const AppAlert = createAlert();
 
 $("#root").append(
   pageTitleArea.addClass("my-5"),
-  m(AppAlert).add('my-3'),
-  m(StepOne).addClass('my-3'),
+  m(RecordArea).addClass("my-5").hide(),
+  m(AppAlert).addClass("my-3"),
+  m(StepOne).addClass("my-3"),
+  m(StepTwo).addClass("my-3").hide()
 );
 
 init();
 
 function init() {
   initLabels();
+  MoneyList.init();
 }
 
 function initLabels() {

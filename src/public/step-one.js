@@ -1,4 +1,4 @@
-const LabelList = cc("div", { classes: 'd-flex gap-3' });
+const LabelList = cc("div", { classes: "d-flex flex-wrap gap-3" });
 
 /**
  * @param {Label} label
@@ -8,12 +8,21 @@ function LabelItem(label) {
   const self = cc("button", {
     id: elemID(label.id, "label"),
     text: label.name,
-    classes: "btn rounded-pill btn-primary",
+    attr: { type: "button" },
+    classes: "btn rounded-pill btn-success",
   });
 
   self.init = () => {
     self.elem().on("click", (event) => {
       event.preventDefault();
+      const cardTitle = RecordArea.elem().find(".card-title");
+      cardTitle.text(label.name);
+      StepOne.elem().fadeOut({
+        complete: () => {
+          StepTwo.show();
+          RecordArea.show();
+        },
+      });
     });
   };
 
@@ -22,7 +31,7 @@ function LabelItem(label) {
 
 const FormAlert_CreateLabel = createAlert();
 const LabelNameInput = createInput("text", "required");
-const CreateLabelBtn = createButton('Create', 'primary');
+const CreateLabelBtn = createButton("Create", "primary");
 
 const Form_CreateLabel = cc("form", {
   attr: { autocomplete: "off" },
@@ -31,9 +40,7 @@ const Form_CreateLabel = cc("form", {
       .addClass("input-group input-group-lg")
       .append(
         // label
-        m("span")
-          .addClass('input-group-text')
-          .text("New Label"),
+        m("span").addClass("input-group-text").text("New Label"),
 
         // text input
         m(LabelNameInput)
@@ -52,6 +59,11 @@ const Form_CreateLabel = cc("form", {
             focus(LabelNameInput);
             return;
           }
+          if (hasWhiteSpace(name)) {
+            FormAlert_CreateLabel.insert("danger", "標籤不可包含空格");
+            focus(LabelNameInput);
+            return;
+          }
           axiosPost(
             "/api/create-label",
             { name: name },
@@ -62,7 +74,7 @@ const Form_CreateLabel = cc("form", {
                 "success",
                 `成功創建 Label {id: ${label.id}, name: ${label.name}}`
               );
-              Item = LabelItem(label);
+              const Item = LabelItem(label);
               LabelList.elem().prepend(m(Item));
               LabelNameInput.elem().val("");
               focus(LabelNameInput);
@@ -76,24 +88,26 @@ const Form_CreateLabel = cc("form", {
 const FormArea_CreateLabel = cc("div", {
   children: [
     m(Form_CreateLabel),
-    m(FormAlert_CreateLabel).addClass("row my-1")
-  ]
+    m(FormAlert_CreateLabel).addClass("row my-1"),
+  ],
 });
 
-const ToggleCreateLabelBtn = createButton('新建標籤', 'link');
+const ToggleCreateLabelBtn = createButton("新建標籤", "link");
 
-const StepOne = cc('div', {
+const StepOne = cc("div", {
   children: [
-    m('h3').text('Step One (第一步)'),
-    m('p').append(
-      span('請點撃標籤, 或'),
-      m(ToggleCreateLabelBtn).on('click', event => {
-        event.preventDefault();
-        FormArea_CreateLabel.show();
-        focus(LabelNameInput);
-      }),
-    ),
+    m("h3").text("Step One (第一步)"),
+    m("p")
+      .addClass("my-3")
+      .append(
+        span("請點撃標籤, 或"),
+        m(ToggleCreateLabelBtn).on("click", (event) => {
+          event.preventDefault();
+          FormArea_CreateLabel.show();
+          focus(LabelNameInput);
+        })
+      ),
     m(FormArea_CreateLabel).addClass("my-3").hide(),
     m(LabelList).addClass("my-3"),
-  ]
+  ],
 });
