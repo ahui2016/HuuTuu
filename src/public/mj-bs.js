@@ -1,3 +1,6 @@
+// 这些 class 只是为了方便生成文档，不实际使用。
+class LinkOptions {};
+
 /**
  * 获取地址栏的参数。
  * @param {string} name

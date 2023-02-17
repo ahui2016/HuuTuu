@@ -28,12 +28,13 @@ const RecordArea = cc("div", {
       .addClass("card-body text-dark")
       .append(
         m("h4").addClass("card-title"),
+        m("p").addClass("RecordNotes text-muted").hide(),
         m("p").addClass("text-muted").text("第二步: 請選擇金額"),
-        m("p").addClass("card-text").hide(),
+        m("p").addClass("card-text fs-4 fw-bold").hide(),
         m("div")
           .addClass("text-end")
           .append(
-            m(AppSubmitBtn)  // ---> ---> ---> ---> Create Record Button
+            m(AppSubmitBtn) // ---> ---> ---> ---> Create Record Button
               .addClass("me-1")
               .on("click", (event) => {
                 event.preventDefault();
@@ -45,7 +46,7 @@ const RecordArea = cc("div", {
                     const record = resp.data;
                     AppAlert.insert(
                       "success",
-                      `成功創建 Record(id:${record.id}) ${record.label.name}:${record.amount}`
+                      `成功創建 Record(id:${record.id}) ${record.label.name} ￥${record.amount}`
                     );
                   },
                 });
@@ -53,7 +54,8 @@ const RecordArea = cc("div", {
             m(AppCancelBtn).on("click", (event) => {
               event.preventDefault();
               RecordArea.elem().fadeOut("fast");
-              StepTwo.elem().fadeOut("fast", () => {
+              StepTwo.elem().fadeOut('fast');
+              StepThree.elem().fadeOut("fast", () => {
                 window.location.reload();
               });
             })
@@ -69,7 +71,8 @@ $("#root").append(
   m(RecordArea).addClass("my-5").hide(),
   m(AppAlert).addClass("my-3"),
   m(StepOne).addClass("my-3"),
-  m(StepTwo).addClass("my-3").hide()
+  m(StepTwo).addClass("my-3").hide(),
+  m(StepThree).addClass("my-3").hide(),
 );
 
 init();
@@ -77,6 +80,7 @@ init();
 function init() {
   initLabels();
   MoneyList.init();
+  NotesList.init();
 }
 
 function initLabels() {

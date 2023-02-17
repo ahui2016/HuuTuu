@@ -37,7 +37,7 @@ def get_label_by_name(label: forms.LabelCreate, db: Session = Depends(get_db)):
     return db_label
 
 
-@router.post('/create-record', response_model=forms.Record)
+@router.post('/create-record', response_model=forms.RecordWithLabel)
 def create_record(record: forms.RecordCreate, db: Session = Depends(get_db)):
     return crud.create_record(db, record)
 

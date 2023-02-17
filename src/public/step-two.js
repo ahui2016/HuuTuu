@@ -14,6 +14,16 @@ function MoneyItem(amount) {
   self.init = () => {
     self.elem().on("click", (event) => {
       event.preventDefault();
+      RecordArea.elem().find('.text-muted').hide();
+      const cardText = RecordArea.elem().find('.card-text');
+      cardText.show().text(`￥${val}`);
+      window["my-record"].amount = amount;
+      StepTwo.elem().fadeOut({
+        complete: () => {
+          StepThree.show();
+          focus(NotesInput);
+        },
+      });
     });
   };
 

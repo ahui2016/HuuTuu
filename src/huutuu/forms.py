@@ -42,3 +42,12 @@ class LabelWithRecords(LabelBase):
 
     class Config:
         orm_mode = True
+
+
+class RecordWithLabel(RecordBase):
+    id: int  # 時間戳
+    dt: int  # 時間戳
+    label: Label
+
+    class Config:
+        orm_mode = True
