@@ -17,6 +17,7 @@ function LabelItem(label) {
       event.preventDefault();
       const cardTitle = RecordArea.elem().find(".card-title");
       cardTitle.text(label.name);
+      window["my-record"].label_id = label.id;
       StepOne.elem().fadeOut({
         complete: () => {
           StepTwo.show();
@@ -64,11 +65,11 @@ const Form_CreateLabel = cc("form", {
             focus(LabelNameInput);
             return;
           }
-          axiosPost(
-            "/api/create-label",
-            { name: name },
-            FormAlert_CreateLabel,
-            (resp) => {
+          axiosPost({
+            url: "/api/create-label",
+            body: { name: name },
+            alert: FormAlert_CreateLabel,
+            onSuccess: (resp) => {
               const label = resp.data;
               FormAlert_CreateLabel.insert(
                 "success",
@@ -78,8 +79,8 @@ const Form_CreateLabel = cc("form", {
               LabelList.elem().prepend(m(Item));
               LabelNameInput.elem().val("");
               focus(LabelNameInput);
-            }
-          );
+            },
+          });
         })
       ),
   ],

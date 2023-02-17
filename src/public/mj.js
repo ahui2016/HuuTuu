@@ -11,7 +11,7 @@
  * @returns {mjElement}
  */
 function m(obj) {
-  if (typeof obj == "string") {
+  if (typeof obj === "string") {
     return $(document.createElement(obj));
   }
   return obj.view;

@@ -4,6 +4,13 @@ from step-one.js import (
 )
 */
 
+// 對應後端的 forms.RecordCreate
+window["my-record"] = {
+  amount: null,
+  note: null,
+  label_id: null,
+};
+
 const pageTitle = m("h5").text("HuuTuu").addClass("display-5");
 const pageSubtitle = m("p").text("糊塗記帳 ・ 難得糊塗").addClass(".lead");
 const pageTitleArea = m("div")
@@ -26,14 +33,30 @@ const RecordArea = cc("div", {
         m("div")
           .addClass("text-end")
           .append(
-            m(AppSubmitBtn).addClass("me-1"),
+            m(AppSubmitBtn)  // ---> ---> ---> ---> Create Record Button
+              .addClass("me-1")
+              .on("click", (event) => {
+                event.preventDefault();
+                axiosPost({
+                  url: "/api/create-record",
+                  body: window["my-record"],
+                  alert: AppAlert,
+                  onSuccess: (resp) => {
+                    const record = resp.data;
+                    AppAlert.insert(
+                      "success",
+                      `成功創建 Record(id:${record.id}) ${record.label.name}:${record.amount}`
+                    );
+                  },
+                });
+              }),
             m(AppCancelBtn).on("click", (event) => {
               event.preventDefault();
               RecordArea.elem().fadeOut("fast");
               StepTwo.elem().fadeOut("fast", () => {
                 window.location.reload();
               });
-          })
+            })
           )
       ),
   ],
@@ -57,14 +80,18 @@ function init() {
 }
 
 function initLabels() {
-  axiosGet("/api/all-labels", AppAlert, (resp) => {
-    const labels = resp.data;
-    if (labels && labels.length > 0) {
-      appendToList(LabelList, labels.map(LabelItem));
-    } else {
-      AppAlert.insert("info", "無預設標籤, 請新增標籤.");
-      FormArea_CreateLabel.show();
-      focus(LabelNameInput);
-    }
+  axiosGet({
+    url: "/api/all-labels",
+    alert: AppAlert,
+    onSuccess: (resp) => {
+      const labels = resp.data;
+      if (labels && labels.length > 0) {
+        appendToList(LabelList, labels.map(LabelItem));
+      } else {
+        AppAlert.insert("info", "無預設標籤, 請新增標籤.");
+        FormArea_CreateLabel.show();
+        focus(LabelNameInput);
+      }
+    },
   });
 }
