@@ -51,3 +51,13 @@ class RecordWithLabel(RecordBase):
 
     class Config:
         orm_mode = True
+
+
+class DateAmountBase(BaseModel):
+    date: str
+    amount: int
+    labels: set[str] = []
+
+
+class DateAmount(DateAmountBase):
+    pass

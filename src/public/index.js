@@ -86,7 +86,9 @@ $("#root").append(
   m(StepTwo).addClass("my-3").hide(),
   m(StepThree).addClass("my-3").hide(),
   m('p').addClass('text-end my-5').append(
-    createLinkElem('record-items.html', {text:'Items'})
+    createLinkElem('records-items.html', {text:'Items'}),
+    span(' | ').addClass('text-muted'),
+    createLinkElem('records-days.html', {text:'Days'}),
   ),
 );
 

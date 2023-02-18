@@ -1,3 +1,4 @@
+import arrow
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -46,6 +47,25 @@ def create_record(record: forms.RecordCreate, db: Session = Depends(get_db)):
 def get_all_records(
         skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_all_records(db, skip=skip, limit=limit)
+
+
+@router.get('/records-days', response_model=list[forms.DateAmount])
+def get_records_days(
+        skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    records = crud.get_all_records(db, skip=skip, limit=limit)
+    records_days: dict[str, forms.DateAmount] = {}
+    for record in records:
+        day = arrow.get(record.dt).format('YYYY-MM-DD')
+        if day in records_days:
+            records_days[day].amount += record.amount
+            records_days[day].labels.add(record.label.name)
+        else:
+            item = forms.DateAmount(
+                date=day, amount=record.amount, labels=[record.label.name])
+            records_days[day] = item
+
+    # 字典已排序 (Python 的特性)
+    return list(records_days.values())
 
 
 @router.get('/all-labels', response_model=list[forms.Label])

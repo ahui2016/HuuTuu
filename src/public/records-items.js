@@ -16,7 +16,6 @@ function RecordItemsTableRow(record) {
   if (record.notes) {
     label.append(span(record.notes).addClass("text-muted ms-2"));
   }
-  const i = predefinedAmounts.indexOf(record.amount);
   return cc("tr", {
     children: [
       m("td").text(dayjs.unix(record.dt).format("YYYY-MM-DD")),
@@ -26,11 +25,11 @@ function RecordItemsTableRow(record) {
   });
 }
 
-const RecordItemsTabelBody = cc("tbody");
+const RecordItemsTableBody = cc("tbody");
 
-const RecordItemsTabel = cc("tabel", {
+const RecordItemsTable = cc("table", {
   classes: "table font-monospace",
-  children: [m(RecordItemsTabelBody)],
+  children: [m(RecordItemsTableBody)],
 });
 
 const RecordItemsAlert = createAlert();
@@ -38,7 +37,7 @@ const RecordItemsAlert = createAlert();
 $("#root").append(
   pageTitleArea.addClass("my-5"),
   m(RecordItemsAlert).addClass("my-3"),
-  m(RecordItemsTabel).addClass("my-3")
+  m(RecordItemsTable).addClass("my-3")
 );
 
 init();
@@ -54,9 +53,9 @@ function initRecordItems() {
     onSuccess: (resp) => {
       const records = resp.data;
       if (records && records.length > 0) {
-        appendToList(RecordItemsTabelBody, records.map(RecordItemsTableRow));
+        appendToList(RecordItemsTableBody, records.map(RecordItemsTableRow));
       } else {
-        AppAlert.insert("info", "暫無數據");
+        RecordItemsAlert.insert("info", "暫無數據");
       }
     },
   });
