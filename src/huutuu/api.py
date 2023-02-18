@@ -42,7 +42,7 @@ def create_record(record: forms.RecordCreate, db: Session = Depends(get_db)):
     return crud.create_record(db, record)
 
 
-@router.get('/all-records', response_model=list[forms.Record])
+@router.get('/all-records', response_model=list[forms.RecordWithLabel])
 def get_all_records(
         skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_all_records(db, skip=skip, limit=limit)

@@ -1,5 +1,5 @@
 // 这些 class 只是为了方便生成文档，不实际使用。
-class LinkOptions {};
+class LinkOptions {}
 
 /**
  * 获取地址栏的参数。
@@ -135,7 +135,7 @@ function createAlert() {
 
 /**
  * @param {string} href
- * @param {LinkOptions?} options `{text?: string, title?: string, blank?: 'blank'}`
+ * @param {LinkOptions?} options `{text?: string, title?: string, blank?: boolean}`
  * @returns {mjElement}
  */
 function createLinkElem(href, options) {
@@ -145,7 +145,7 @@ function createLinkElem(href, options) {
   if (!options.text) options.text = href;
   const link = m("a").text(options.text).attr("href", href);
   if (options.title) link.attr("title", options.title);
-  if (options.blank == "blank") link.attr("target", "_blank");
+  if (options.blank) link.attr("target", "_blank");
   return link;
 }
 
@@ -263,13 +263,16 @@ function copyToClipboard(text, alert) {
 // https://axios-http.com/docs/handling_errors
 function axiosErrToStr(err, data2str) {
   if (err.response) {
+    if (err.response.status == 500) {
+      return "500 Internal Server Error";
+    }
     const dataText = data2str(err.response.data);
     // err.response.data.detail 裏的 detail 與後端對應.
     return `[${err.response.status}] ${dataText}`;
   }
   if (err.request) {
     return (
-      err.request.status + ":The request was made but no response was received."
+      err.request.status + " The request was made but no response was received."
     );
   }
   return err.message;
@@ -282,7 +285,7 @@ function errorData_toString(data) {
 // api = HTTP-Get("/openapi.json")
 // validationError = api.components.schemas.ValidationError
 function validationErrorData_toString(data) {
-  if (typeof data.detail === 'string') {
+  if (typeof data.detail === "string") {
     return data.detail;
   }
   const detail = data.detail[0];
@@ -334,3 +337,12 @@ function axiosPost(options) {
 function hasWhiteSpace(s) {
   return /\s/g.test(s);
 }
+
+// 以下與 mj-bs.js 無關.
+
+// 糊塗記帳預設金額
+const predefinedAmounts = [
+  0, 5, 10, 15, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 200, 300, 400, 500,
+  600, 700, 800, 900, 1000, 1500, 2000, 3000, 4000, 5000, 6000, 7000, 8000,
+  9000, 10000,
+];

@@ -19,6 +19,7 @@ const pageTitleArea = m("div")
 
 const AppSubmitBtn = createButton("submit", "primary");
 const AppCancelBtn = createButton("cancel", "secondary");
+const AppReloadBtn = createButton('再記一筆', 'success');
 
 const RecordArea = cc("div", {
   classes: "card border-secondary mx-auto",
@@ -48,6 +49,10 @@ const RecordArea = cc("div", {
                       "success",
                       `成功創建 Record(id:${record.id}) ${record.label.name} ￥${record.amount}`
                     );
+                    AppSubmitBtn.hide();
+                    AppCancelBtn.hide();
+                    AppReloadBtn.show();
+                    StepThree.elem().fadeOut();
                   },
                 });
               }),
@@ -58,7 +63,14 @@ const RecordArea = cc("div", {
               StepThree.elem().fadeOut("fast", () => {
                 window.location.reload();
               });
-            })
+            }),
+            m(AppReloadBtn).on('click', event => {
+              event.preventDefault();
+              AppAlert.elem().fadeOut();
+              RecordArea.elem().fadeOut({complete: () => {
+                window.location.reload();
+              }});
+            }).hide()
           )
       ),
   ],
@@ -73,6 +85,9 @@ $("#root").append(
   m(StepOne).addClass("my-3"),
   m(StepTwo).addClass("my-3").hide(),
   m(StepThree).addClass("my-3").hide(),
+  m('p').addClass('text-end my-5').append(
+    createLinkElem('record-items.html', {text:'Items'})
+  ),
 );
 
 init();

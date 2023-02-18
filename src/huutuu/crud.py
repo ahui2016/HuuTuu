@@ -56,7 +56,11 @@ def create_record(db: Session, record: forms.RecordCreate) -> model.Record:
 def get_all_records(
         db: Session, skip: int = 0, limit: int = 100
 ) -> Sequence[model.Record]:
-    return db.scalars(select(model.Record).offset(skip).limit(limit)).all()
+    return db.scalars(select(model.Record)
+        .order_by(model.Record.dt.desc())
+        .offset(skip)
+        .limit(limit)
+    ).all()
 
 
 def get_all_labels(
