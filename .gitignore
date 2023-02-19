@@ -3,3 +3,4 @@ env/
 .idea/
 src/huutuu/__pycache__/
 *.db
+src/public/photos/*.jpg

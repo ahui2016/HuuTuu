@@ -40,13 +40,14 @@ function RecordItemsTableRow(record) {
   const IDBtn = cc("a", {
     text: "🆔",
     attr: { href: "#", title: record.id },
-    classes: "text-decoration-none mx-1",
+    classes: "text-decoration-none ms-1",
   });
 
   return cc("tr", {
     children: [
       m("td")
-        .addClass("text-nowrap")
+        .attr({ "data-id": record.id })
+        .addClass("ID-Column text-nowrap")
         .append(
           dayjs.unix(record.dt).format("YYYY-MM-DD"),
           m(IDBtn).on("click", () => {
@@ -97,23 +98,55 @@ $("#root").append(
 
 init();
 
-function init() {
-  initRecordItems();
+async function init() {
+  await initRecordItems();
+  const photos = await getPhotos();
+  initPhotos(photos);
 }
 
 function initRecordItems() {
-  axiosGet({
-    url: "/api/all-records",
-    alert: RecordItemsAlert,
-    onSuccess: (resp) => {
-      const records = resp.data;
-      if (records && records.length > 0) {
-        appendToList(RecordItemsTableBody, records.map(RecordItemsTableRow));
-      } else {
-        RecordItemsAlert.insert("info", "暫無數據");
-      }
-    },
+  return new Promise((resolve) => {
+    axiosGet({
+      url: "/api/all-records",
+      alert: RecordItemsAlert,
+      onSuccess: (resp) => {
+        const records = resp.data;
+        if (records && records.length > 0) {
+          appendToList(RecordItemsTableBody, records.map(RecordItemsTableRow));
+        } else {
+          RecordItemsAlert.insert("info", "暫無數據");
+        }
+        resolve();
+      },
+    });
   });
+}
+
+function getPhotos() {
+  return new Promise((resolve) => {
+    axiosGet({
+      url: "/api/all-photos",
+      alert: RecordItemsAlert,
+      onSuccess: (resp) => {
+        resolve(resp.data);
+      },
+    });
+  });
+}
+
+function initPhotos(photos) {
+  $(".ID-Column").each(function() {
+    data_id = $(this).attr("data-id");
+    id = parseInt(data_id);
+    if (id in photos) {
+      const PhotoBtn = cc("a", {
+        text: "🖼️",
+        attr: { href: "#", title: "photo", target: "_blank" },
+        classes: "text-decoration-none",
+      });
+      $(this).append(m(PhotoBtn).attr({ href: `photos/${id}${photos[id]}` }));
+    }
+  })
 }
 
 function moneyBar(amount) {

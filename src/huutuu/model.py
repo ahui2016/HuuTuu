@@ -1,6 +1,12 @@
+from pathlib import Path
+
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .database import Base
+
+
+CWD = Path.cwd().resolve()
+PhotosFolderPath = CWD.joinpath('src', 'public', 'photos')
 
 
 class Metadata(Base):

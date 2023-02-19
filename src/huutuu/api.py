@@ -100,3 +100,13 @@ def get_records_days(
 def get_all_labels(
         skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     return crud.get_all_labels(db, skip=skip, limit=limit)
+
+
+@router.get('/all-photos', response_model=dict[str, str])
+def get_all_photos():
+    photos: dict[str, str] = {}
+    files = model.PhotosFolderPath.glob("*")
+    for f in files:
+        if f.is_file():
+            photos[f.stem] = f.suffix
+    return photos
