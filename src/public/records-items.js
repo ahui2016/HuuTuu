@@ -1,23 +1,30 @@
 // 这些 class 只是为了方便生成文档，不实际使用。
 class RecordWithLabel {}
 
-const navBar = m("div").addClass('row').append(
-  m('div').addClass('col text-start').append(
-    createLinkElem("index.html", { text: "HuuTuu" }),
-    span(" .. Items (流水帳)")  
-  ),
-  m("div").addClass('col text-end').append(
-    createLinkElem("records-days.html", { text: "Days" }),
-    " | ",
-    createLinkElem("records-months.html", { text: "Months" }),
-    " | ",
-    createLinkElem("records-years.html", { text: "Years" })
-  )
-);
+const navBar = m("div")
+  .addClass("row")
+  .append(
+    m("div")
+      .addClass("col text-start")
+      .append(
+        createLinkElem("index.html", { text: "HuuTuu" }),
+        span(" .. Items (流水帳)")
+      ),
+    m("div")
+      .addClass("col text-end")
+      .append(
+        createLinkElem("records-days.html", { text: "Days" }),
+        " | ",
+        createLinkElem("records-months.html", { text: "Months" }),
+        " | ",
+        createLinkElem("records-years.html", { text: "Years" })
+      )
+  );
 
 const IDToasts = createToasts();
+$("#root").append(m(IDToasts));
+// IDToasts.elem().addClass("top-50 start-50 translate-middle");
 const IDToast = IDToasts.new();
-IDToast.setTitle('Record ID');
 
 /**
  * @param {RecordWithLabel} record
@@ -30,16 +37,42 @@ function RecordItemsTableRow(record) {
     label.append(span(record.notes).addClass("text-muted ms-2"));
   }
 
-  const IDBtn = createButton('🆔', 'link');
+  const IDBtn = cc("a", {
+    text: "🆔",
+    attr: { href: "#", title: record.id },
+    classes: "text-decoration-none mx-1",
+  });
 
   return cc("tr", {
     children: [
-      m("td").append(
-        dayjs.unix(record.dt).format("YYYY-MM-DD"),
-        m(IDBtn).on('click', () => {
-          IDToast.popup(record.id);
-        })
-      ),
+      m("td")
+        .addClass("text-nowrap")
+        .append(
+          dayjs.unix(record.dt).format("YYYY-MM-DD"),
+          m(IDBtn).on("click", () => {
+            copyToClipboard2(
+              record.id,
+              () => {
+                IDToast.popup(
+                  m("p")
+                    .text(`Record ID: ${record.id} 己複製至剪貼簿`)
+                    .addClass("mt-3 mb-5 text-center"),
+                  "Copied! (複製成功!)",
+                  "success"
+                );
+              },
+              () => {
+                IDToast.popup(
+                  m("p")
+                    .text(`Record ID: ${record.id} 複製失敗`)
+                    .addClass("mt-3 mb-5 text-center"),
+                  "Failed! (複製失敗!)",
+                  "danger"
+                );
+              }
+            );
+          })
+        ),
       m("td").text(`${moneyBar(record.amount)}(￥${record.amount})`),
       m("td").append(label),
     ],
@@ -56,8 +89,8 @@ const RecordItemsTable = cc("table", {
 const RecordItemsAlert = createAlert();
 
 $("#root").append(
-  navBar.addClass('my-3'),
-  m(IDToasts),
+  navBar.addClass("my-3"),
+  // m(IDToasts),
   m(RecordItemsAlert).addClass("my-3"),
   m(RecordItemsTable).addClass("my-3")
 );

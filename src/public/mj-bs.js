@@ -137,9 +137,10 @@ function createAlert() {
  * 使用方法:
  * ```
  * const Toasts = createToasts();
+ * $('#root').append(m(IDToasts)); // 必須立即實體化.
  * const Toast = Toasts.new();
  * // Toast.setTitle(title);
- * Toast.popup(body, title);
+ * Toast.popup(body, title?);
  * ```
  */
 function createToasts() {
@@ -156,7 +157,7 @@ function createToasts() {
 
 function createToast() {
   const self = cc("div", {
-    classes: "toast",
+    classes: "toast text-bg-primary",
     attr: { role: "alert", "aria-live": "assertive", "aria-atomic": "true" },
     children: [
       m("div")
@@ -180,13 +181,17 @@ function createToast() {
   };
 
   /**
-   * @param {mjElement} body
+   * @param {mjElement | string} body
    * @param {string?} title
+   * @param {string?} color default: 'primary'
    */
-  self.popup = (body, title) => {
+  self.popup = (body, title, color) => {
+    if (!color) color = 'primary';
+    self.elem().removeClass().addClass(`toast text-bg-${color}`);
     if (title) self.find("strong").text(title);
     self.find("small").text(dayjs().format("HH:mm:ss"));
-    self.find(".toast-body").append(body);
+    if (typeof body == 'string') body = span(body);
+    self.find(".toast-body").html("").append(body);
     const toast = new bootstrap.Toast(self.elem()[0]);
     toast.show();
   };
@@ -321,6 +326,10 @@ function copyToClipboard(text, alert, successMsg) {
       if (alert) alert.insert("danger", "複製失敗");
     }
   );
+}
+
+function copyToClipboard2(text, onSuccess, onFail) {
+  navigator.clipboard.writeText(text).then(onSuccess, onFail);
 }
 
 // https://axios-http.com/docs/handling_errors
