@@ -2,7 +2,8 @@ const predefinedNotes = [
   "這些是常用備註",
   "點擊常用備註方便輸入",
   "你可以自定義常用備註",
-  '大家樂',
+  "早餐",
+  "大家樂",
 ];
 
 const NotesInput = createInput("text");

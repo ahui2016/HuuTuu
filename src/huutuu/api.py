@@ -2,7 +2,7 @@ import arrow
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from . import forms, crud
+from . import model, forms, crud
 from .database import get_db
 
 
@@ -16,6 +16,20 @@ def create_label(label: forms.LabelCreate, db: Session = Depends(get_db)):
         raise HTTPException(
             status_code=400, detail=f'Label ({label.name}) already registered')
     return crud.create_label(db, label)
+
+
+@router.post('/update-label', response_model=forms.Label)
+def update_label(label: forms.Label, db: Session = Depends(get_db)):
+    return crud.update_label(db, label)
+
+
+@router.get('/get-label-by-id', response_model=forms.Label)
+def get_label_by_id_without_records(label_id: int, db: Session = Depends(get_db)):
+    db_label = db.get(model.Label, label_id)
+    if not db_label:
+        raise HTTPException(
+            status_code=404, detail=f'Label ID Not Found: {label_id}')
+    return db_label
 
 
 @router.post('/get-label-by-name', response_model=forms.Label)
@@ -38,9 +52,23 @@ def get_label_by_name(label: forms.LabelCreate, db: Session = Depends(get_db)):
     return db_label
 
 
+@router.get('/get-record', response_model=forms.RecordWithLabel)
+def get_record_by_id(record_id: int, db: Session = Depends(get_db)):
+    db_record = db.get(model.Record, record_id)
+    if not db_record:
+        raise HTTPException(
+            status_code=404, detail=f'Record ID Not Found: {record_id}')
+    return db_record
+
+
 @router.post('/create-record', response_model=forms.RecordWithLabel)
 def create_record(record: forms.RecordCreate, db: Session = Depends(get_db)):
     return crud.create_record(db, record)
+
+
+@router.post('/update-record', response_model=forms.RecordWithLabel)
+def update_record(record: forms.Record, db: Session = Depends(get_db)):
+    return crud.update_record(db, record)
 
 
 @router.get('/all-records', response_model=list[forms.RecordWithLabel])
