@@ -134,6 +134,67 @@ function createAlert() {
 }
 
 /**
+ * 使用方法:
+ * ```
+ * const Toasts = createToasts();
+ * const Toast = Toasts.new();
+ * // Toast.setTitle(title);
+ * Toast.popup(body, title);
+ * ```
+ */
+function createToasts() {
+  const self = cc("div", { classes: "toast-container" });
+
+  self.new = () => {
+    const Toast = createToast();
+    self.elem().prepend(m(Toast));
+    return Toast;
+  };
+
+  return self;
+}
+
+function createToast() {
+  const self = cc("div", {
+    classes: "toast",
+    attr: { role: "alert", "aria-live": "assertive", "aria-atomic": "true" },
+    children: [
+      m("div")
+        .addClass("toast-header")
+        .append(
+          // m("img").addClass("rounded me-2").attr({ src: "...", alt: "..." }),
+          m("strong").addClass("me-auto"),
+          m("small"),
+          m("button").addClass("btn-close").attr({
+            type: "button",
+            "data-bs-dismiss": "toast",
+            "aria-label": "Close",
+          })
+        ),
+      m("div").addClass("toast-body"),
+    ],
+  });
+
+  self.setTitle = (title) => {
+    self.find("strong").text(title);
+  };
+
+  /**
+   * @param {mjElement} body
+   * @param {string?} title
+   */
+  self.popup = (body, title) => {
+    if (title) self.find("strong").text(title);
+    self.find("small").text(dayjs().format("HH:mm:ss"));
+    self.find(".toast-body").append(body);
+    const toast = new bootstrap.Toast(self.elem()[0]);
+    toast.show();
+  };
+
+  return self;
+}
+
+/**
  * @param {string} href
  * @param {LinkOptions?} options `{text?: string, title?: string, blank?: boolean}`
  * @returns {mjElement}
@@ -248,11 +309,13 @@ function elemID(id, prefix = "e") {
 /**
  * @param {string} text
  * @param {mjComponent?} alert
+ * @param {string?} successMsg
  */
-function copyToClipboard(text, alert) {
+function copyToClipboard(text, alert, successMsg) {
+  if (!successMsg) successMsg = "複製成功";
   navigator.clipboard.writeText(text).then(
     () => {
-      if (alert) alert.insert("success", "複製成功");
+      if (alert) alert.insert("success", successMsg);
     },
     () => {
       if (alert) alert.insert("danger", "複製失敗");

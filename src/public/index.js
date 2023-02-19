@@ -55,7 +55,8 @@ const RecordArea = cc("div", {
                     StepThree.elem().fadeOut();
                   },
                 });
-              }),
+              })
+              .hide(),
             m(AppCancelBtn).on("click", (event) => {
               event.preventDefault();
               RecordArea.elem().fadeOut("fast");

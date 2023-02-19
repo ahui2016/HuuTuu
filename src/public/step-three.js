@@ -2,6 +2,7 @@ const predefinedNotes = [
   "這些是常用備註",
   "點擊常用備註方便輸入",
   "你可以自定義常用備註",
+  '大家樂',
 ];
 
 const NotesInput = createInput("text");
@@ -27,7 +28,7 @@ const Form_Notes = cc("form", {
           .on("click", (event) => {
             event.preventDefault();
             const notes = valOf(NotesInput, "trim");
-            RecordArea.elem().find(".RecordNotes").show().text(notes);
+            RecordArea.find(".RecordNotes").show().text(notes);
             focus(NotesInput);
             window["my-record"].notes = notes;
           })

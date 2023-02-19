@@ -1,8 +1,16 @@
-const pageTitle = m("h5").text("HuuTuu").addClass("display-5");
-const pageSubtitle = m("p").text("糊塗記帳 ・ 難得糊塗").addClass(".lead");
-const pageTitleArea = m("div")
-  .append(pageTitle, pageSubtitle)
-  .addClass("text-center");
+const navBar = m("div").addClass('row').append(
+  m('div').addClass('col text-start').append(
+    createLinkElem("index.html", { text: "HuuTuu" }),
+    span(" .. Days (每日支出)")  
+  ),
+  m("div").addClass('col text-end').append(
+    createLinkElem("records-items.html", { text: "Items" }),
+    " | ",
+    createLinkElem("records-months.html", { text: "Months" }),
+    " | ",
+    createLinkElem("records-years.html", { text: "Years" })
+  )
+);
 
 function DaysTableRow(dateAmount) {
   const labels = dateAmount.labels.join(', ');
@@ -25,7 +33,7 @@ const DaysTable = cc("table", {
 const DaysTableAlert = createAlert();
 
 $("#root").append(
-  pageTitleArea.addClass("my-5"),
+  navBar.addClass("my-3"),
   m(DaysTableAlert).addClass("my-3"),
   m(DaysTable).addClass("my-3")
 );

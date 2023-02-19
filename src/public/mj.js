@@ -34,6 +34,7 @@ function newComponent(name, id) {
     raw_id: raw_id,
     view: m(name).attr("id", raw_id),
     elem: () => $(id),
+    find: (selector) => $(id).find(selector),
     hide: () => {
       $(id).hide();
     },

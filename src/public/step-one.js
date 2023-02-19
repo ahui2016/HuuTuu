@@ -15,9 +15,10 @@ function LabelItem(label) {
   self.init = () => {
     self.elem().on("click", (event) => {
       event.preventDefault();
-      const cardTitle = RecordArea.elem().find(".card-title");
+      const cardTitle = RecordArea.find(".card-title");
       cardTitle.text(label.name);
       window["my-record"].label_id = label.id;
+      AppAlert.clear();
       StepOne.elem().fadeOut({
         complete: () => {
           StepTwo.show();
@@ -77,6 +78,7 @@ const Form_CreateLabel = cc("form", {
               );
               const Item = LabelItem(label);
               LabelList.elem().prepend(m(Item));
+              Item.init();
               LabelNameInput.elem().val("");
               focus(LabelNameInput);
             },
@@ -106,7 +108,8 @@ const StepOne = cc("div", {
           event.preventDefault();
           FormArea_CreateLabel.show();
           focus(LabelNameInput);
-        })
+        }),
+        span('後點擊標籤.')
       ),
     m(FormArea_CreateLabel).addClass("my-3").hide(),
     m(LabelList).addClass("my-3"),

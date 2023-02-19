@@ -14,12 +14,13 @@ function MoneyItem(amount) {
   self.init = () => {
     self.elem().on("click", (event) => {
       event.preventDefault();
-      RecordArea.elem().find('.text-muted').hide();
-      const cardText = RecordArea.elem().find('.card-text');
+      RecordArea.find('.text-muted').hide();
+      const cardText = RecordArea.find('.card-text');
       cardText.show().text(`￥${val}`);
       window["my-record"].amount = amount;
       StepTwo.elem().fadeOut({
         complete: () => {
+          AppSubmitBtn.show();
           StepThree.show();
           focus(NotesInput);
         },
@@ -39,7 +40,7 @@ MoneyList.init = () => {
 const StepTwo = cc('div', {
   children: [
     m('h3').text('Step Two (第二步)'),
-    m('p').text('請點撃金額 (四捨五入)').addClass("my-3"),
+    m('p').text('請點撃金額 (四捨五入, 單位:圓)').addClass("my-3"),
     m(MoneyList).addClass("my-3"),
   ]
 });

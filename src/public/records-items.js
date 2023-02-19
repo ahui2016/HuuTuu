@@ -1,24 +1,45 @@
 // 这些 class 只是为了方便生成文档，不实际使用。
 class RecordWithLabel {}
 
-const pageTitle = m("h5").text("HuuTuu").addClass("display-5");
-const pageSubtitle = m("p").text("糊塗記帳 ・ 難得糊塗").addClass(".lead");
-const pageTitleArea = m("div")
-  .append(pageTitle, pageSubtitle)
-  .addClass("text-center");
+const navBar = m("div").addClass('row').append(
+  m('div').addClass('col text-start').append(
+    createLinkElem("index.html", { text: "HuuTuu" }),
+    span(" .. Items (流水帳)")  
+  ),
+  m("div").addClass('col text-end').append(
+    createLinkElem("records-days.html", { text: "Days" }),
+    " | ",
+    createLinkElem("records-months.html", { text: "Months" }),
+    " | ",
+    createLinkElem("records-years.html", { text: "Years" })
+  )
+);
+
+const IDToasts = createToasts();
+const IDToast = IDToasts.new();
+IDToast.setTitle('Record ID');
 
 /**
  * @param {RecordWithLabel} record
  * @returns {mjComponent}
  */
 function RecordItemsTableRow(record) {
-  const label = m("div").addClass('text-nowrap').text(record.label.name);
+  const label = m("div").addClass("text-nowrap").text(record.label.name);
+
   if (record.notes) {
     label.append(span(record.notes).addClass("text-muted ms-2"));
   }
+
+  const IDBtn = createButton('🆔', 'link');
+
   return cc("tr", {
     children: [
-      m("td").text(dayjs.unix(record.dt).format("YYYY-MM-DD")),
+      m("td").append(
+        dayjs.unix(record.dt).format("YYYY-MM-DD"),
+        m(IDBtn).on('click', () => {
+          IDToast.popup(record.id);
+        })
+      ),
       m("td").text(`${moneyBar(record.amount)}(￥${record.amount})`),
       m("td").append(label),
     ],
@@ -35,7 +56,8 @@ const RecordItemsTable = cc("table", {
 const RecordItemsAlert = createAlert();
 
 $("#root").append(
-  pageTitleArea.addClass("my-5"),
+  navBar.addClass('my-3'),
+  m(IDToasts),
   m(RecordItemsAlert).addClass("my-3"),
   m(RecordItemsTable).addClass("my-3")
 );

@@ -79,3 +79,5 @@ item, day, week, month, year
 ```shell
 uvicorn src.huutuu.main:app
 ```
+
+ℹ️🆔🖼️📝
