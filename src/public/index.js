@@ -19,7 +19,7 @@ const pageTitleArea = m("div")
 
 const AppSubmitBtn = createButton("submit", "primary");
 const AppCancelBtn = createButton("cancel", "secondary");
-const AppReloadBtn = createButton('再記一筆', 'success');
+const AppReloadBtn = createButton("再記一筆", "success");
 
 const RecordArea = cc("div", {
   classes: "card border-secondary mx-auto",
@@ -47,7 +47,7 @@ const RecordArea = cc("div", {
                     const record = resp.data;
                     AppAlert.insert(
                       "success",
-                      `成功創建 Record(id:${record.id}) ${record.label.name} ￥${record.amount}`
+                      `成功創建 Record(id:${record.id}) ${record.label.name}(${record.notes}) ￥${record.amount}`
                     );
                     AppSubmitBtn.hide();
                     AppCancelBtn.hide();
@@ -60,18 +60,22 @@ const RecordArea = cc("div", {
             m(AppCancelBtn).on("click", (event) => {
               event.preventDefault();
               RecordArea.elem().fadeOut("fast");
-              StepTwo.elem().fadeOut('fast');
+              StepTwo.elem().fadeOut("fast");
               StepThree.elem().fadeOut("fast", () => {
                 window.location.reload();
               });
             }),
-            m(AppReloadBtn).on('click', event => {
-              event.preventDefault();
-              AppAlert.elem().fadeOut();
-              RecordArea.elem().fadeOut({complete: () => {
-                window.location.reload();
-              }});
-            }).hide()
+            m(AppReloadBtn)
+              .on("click", (event) => {
+                event.preventDefault();
+                AppAlert.elem().fadeOut();
+                RecordArea.elem().fadeOut({
+                  complete: () => {
+                    window.location.reload();
+                  },
+                });
+              })
+              .hide()
           )
       ),
   ],
@@ -86,11 +90,13 @@ $("#root").append(
   m(StepOne).addClass("my-3"),
   m(StepTwo).addClass("my-3").hide(),
   m(StepThree).addClass("my-3").hide(),
-  m('p').addClass('text-end my-5').append(
-    createLinkElem('records-items.html', {text:'Items'}),
-    span(' | ').addClass('text-muted'),
-    createLinkElem('records-days.html', {text:'Days'}),
-  ),
+  m("p")
+    .addClass("text-end my-5")
+    .append(
+      createLinkElem("records-items.html", { text: "Items" }),
+      span(" | ").addClass("text-muted"),
+      createLinkElem("records-days.html", { text: "Days" })
+    )
 );
 
 init();
