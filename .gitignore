@@ -4,3 +4,6 @@ env/
 src/huutuu/__pycache__/
 *.db
 src/public/photos/*.jpg
+src/public/photos/*.jpeg
+src/public/photos/*.gif
+src/public/photos/*.png

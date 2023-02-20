@@ -186,17 +186,140 @@ function createToast() {
    * @param {string?} color default: 'primary'
    */
   self.popup = (body, title, color) => {
-    if (!color) color = 'primary';
+    if (!color) color = "primary";
     self.elem().removeClass().addClass(`toast text-bg-${color}`);
     if (title) self.find("strong").text(title);
     self.find("small").text(dayjs().format("HH:mm:ss"));
-    if (typeof body == 'string') body = span(body);
+    if (typeof body == "string") body = span(body);
     self.find(".toast-body").html("").append(body);
     const toast = new bootstrap.Toast(self.elem()[0]);
     toast.show();
   };
 
   return self;
+}
+
+/**
+ * 使用方法:
+ * ```
+ * const MyModal = createModal(title, body, footer);
+ * const modalBtn = cc('button', {
+ *   text: 'Launch the modal',
+ *   classes: 'btn btn-primary',
+ *   attr: {type:'button', 'data-bs-toggle':'modal', data-bs-target: MyModal.id}
+ * });
+ * ```
+ * @param {string} title
+ * @param {mjElement | string} body
+ * @param {mjElement | string | null} footer
+ */
+function createStaticModal(title, body, footer) {
+  if (typeof body == "string") {
+    body = m("p").text(body);
+  }
+
+  const modalContent = m("div")
+    .addClass("modal-content")
+    .append(
+      m("div")
+        .addClass("modal-header")
+        .append(
+          m("h5").addClass("modal-title").text(title),
+          m("button").addClass("btn-close").attr({
+            type: "button",
+            "data-bs-dismiss": "modal",
+            "aria-label": "Close",
+          })
+        ),
+      m("div").addClass("modal-body").append(body)
+    );
+
+  if (footer) {
+    if (typeof footer == "string") {
+      footer = m("p").text(footer);
+    }
+    modalContent.append(m("div").addClass("modal-footer").append(footer));
+  }
+
+  const modalDialog = m("div").addClass("modal-dialog").append(modalContent);
+
+  const modal = cc("div", {
+    classes: "modal",
+    children: [modalDialog],
+  });
+
+  return modal;
+}
+
+/**
+ * 使用方法:
+ * ```
+ * const MyModal = createModal('lg');
+ * MyModal.popup(title, body, footer);
+ * ```
+ * @param {string?} size 'xl' | 'lg' | 'sm'
+ * @returns {mjComponent}
+ */
+function createModal(size) {
+  let classes = "modal-dialog";
+  if (size) {
+    classes = `modal-dialog modal-${size}`;
+  }
+  const modal = cc("div", {
+    classes: "modal",
+    children: [
+      m("div")
+        .addClass(classes)
+        .append(
+          m("div")
+            .addClass("modal-content")
+            .append(
+              m("div")
+                .addClass("modal-header")
+                .append(
+                  m("h5").addClass("modal-title"),
+                  m("button").addClass("btn-close").attr({
+                    type: "button",
+                    "data-bs-dismiss": "modal",
+                    "aria-label": "Close",
+                  })
+                ),
+              m("div").addClass("modal-body")
+            )
+        ),
+    ],
+  });
+
+  /**
+   * @param {string} title
+   * @param {mjElement | string} body
+   * @param {mjElement | string | null} footer
+   * @param {object?} options
+   */
+  modal.popup = (title, body, footer, options) => {
+    modal.find(".modal-title").text(title);
+
+    if (typeof body == "string") {
+      body = m("p").text(body);
+    }
+
+    modal.find(".modal-body").html("").append(body);
+    modal.find(".modal-footer").remove();
+
+    if (footer) {
+      if (typeof footer == "string") {
+        footer = m("p").text(footer);
+      }
+      modal
+        .find(".modal-content")
+        .append(m("div").addClass("modal-footer").append(footer));
+    }
+
+    const modalElem = new bootstrap.Modal(modal.id, options);
+    modalElem.show();
+  };
+
+  return modal;
 }
 
 /**

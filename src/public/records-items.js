@@ -31,10 +31,12 @@ const IDToast = IDToasts.new();
  * @returns {mjComponent}
  */
 function RecordItemsTableRow(record) {
-  const label = m("div").addClass("text-nowrap").text(record.label.name);
+  const label = m("div")
+    .addClass("text-nowrap")
+    .append(span(record.label.name).addClass("RecordLabel"));
 
   if (record.notes) {
-    label.append(span(record.notes).addClass("text-muted ms-2"));
+    label.append(span(record.notes).addClass("RecordNotes text-muted ms-2"));
   }
 
   const IDBtn = cc("a", {
@@ -44,12 +46,15 @@ function RecordItemsTableRow(record) {
   });
 
   return cc("tr", {
+    id: `R-${record.id}`,
     children: [
       m("td")
         .attr({ "data-id": record.id })
         .addClass("ID-Column text-nowrap")
         .append(
-          dayjs.unix(record.dt).format("YYYY-MM-DD"),
+          span(dayjs.unix(record.dt).format("YYYY-MM-DD")).addClass(
+            "RecordDate"
+          ),
           m(IDBtn).on("click", () => {
             copyToClipboard2(
               record.id,
@@ -88,10 +93,12 @@ const RecordItemsTable = cc("table", {
 });
 
 const RecordItemsAlert = createAlert();
+const RecordItemsModal = createModal('lg');
 
 $("#root").append(
   navBar.addClass("my-3"),
   // m(IDToasts),
+  m(RecordItemsModal),
   m(RecordItemsAlert).addClass("my-3"),
   m(RecordItemsTable).addClass("my-3")
 );
@@ -135,18 +142,30 @@ function getPhotos() {
 }
 
 function initPhotos(photos) {
-  $(".ID-Column").each(function() {
-    data_id = $(this).attr("data-id");
-    id = parseInt(data_id);
+  $(".ID-Column").each(function () {
+    const data_id = $(this).attr("data-id");
+    const id = parseInt(data_id);
     if (id in photos) {
+      const recordElem = $(`#R-${id}`);
+      const label = recordElem.find(".RecordLabel").text();
+      const notes = recordElem.find(".RecordNotes").text();
+      const date = recordElem.find(".RecordDate").text();
+      const photoURL = `photos/${id}${photos[id]}`;
+      const img = m("img")
+        .addClass("img-fluid")
+        .attr({ src: photoURL, alt: photoURL });
       const PhotoBtn = cc("a", {
         text: "🖼️",
-        attr: { href: "#", title: "photo", target: "_blank" },
+        attr: { href: "#", title: "photo" },
         classes: "text-decoration-none",
       });
-      $(this).append(m(PhotoBtn).attr({ href: `photos/${id}${photos[id]}` }));
+      $(this).append(
+        m(PhotoBtn).on("click", () => {
+          RecordItemsModal.popup(`${label} (${notes})`, img, `Date: ${date}`);
+        })
+      );
     }
-  })
+  });
 }
 
 function moneyBar(amount) {
