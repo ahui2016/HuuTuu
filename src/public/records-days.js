@@ -1,24 +1,32 @@
-const navBar = m("div").addClass('row').append(
-  m('div').addClass('col text-start').append(
-    createLinkElem("index.html", { text: "HuuTuu" }),
-    span(" .. Days (每日支出)")  
-  ),
-  m("div").addClass('col text-end').append(
-    createLinkElem("records-list.html", { text: "List" }),
-    " | ",
-    createLinkElem("records-months.html", { text: "Months" }),
-    " | ",
-    createLinkElem("records-years.html", { text: "Years" })
-  )
-);
+const navBar = m("div")
+  .addClass("row")
+  .append(
+    m("div")
+      .addClass("col text-start")
+      .append(
+        createLinkElem("index.html", { text: "HuuTuu" }),
+        span(" .. Days (每日支出)")
+      ),
+    m("div")
+      .addClass("col text-end")
+      .append(
+        createLinkElem("records-cards.html", { text: "Cards" }),
+        " | ",
+        createLinkElem("records-list.html", { text: "List" }),
+        " | ",
+        createLinkElem("records-months.html", { text: "Months" }),
+        " | ",
+        createLinkElem("records-years.html", { text: "Years" })
+      )
+  );
 
 function DaysTableRow(dateAmount) {
-  const labels = dateAmount.labels.join(', ');
+  const labels = dateAmount.labels.join(", ");
   return cc("tr", {
     children: [
       m("td").text(dateAmount.date),
       m("td").text(`${moneyBar(dateAmount.amount)}(￥${dateAmount.amount})`),
-      m("td").append(labels).addClass('text-nowrap'),
+      m("td").append(labels).addClass("text-nowrap"),
     ],
   });
 }
@@ -60,8 +68,8 @@ function initRecordItems() {
 }
 
 function moneyBar(amount) {
-  if (amount == 0) return '';
-  let i = Math.round(amount/20); // 以 300 元為上限, 300/15=20
+  if (amount == 0) return "";
+  let i = Math.round(amount / 20); // 以 300 元為上限, 300/15=20
   if (i > 15) i = 15;
   return "▊".repeat(i);
 }

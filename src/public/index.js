@@ -23,7 +23,7 @@ const AppReloadBtn = createButton("再記一筆", "success");
 
 const RecordArea = cc("div", {
   classes: "card border-secondary mx-auto",
-  attr: { style: "max-width: 28rem;" },
+  css: { maxWidth: "28rem" },
   children: [
     m("div")
       .addClass("card-body text-dark")
@@ -93,6 +93,8 @@ $("#root").append(
   m("p")
     .addClass("text-end my-5")
     .append(
+      createLinkElem("records-cards.html", { text: "Cards" }),
+      span(" | ").addClass("text-muted"),
       createLinkElem("records-list.html", { text: "List" }),
       span(" | ").addClass("text-muted"),
       createLinkElem("records-days.html", { text: "Days" })

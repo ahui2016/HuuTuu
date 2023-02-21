@@ -13,6 +13,8 @@ const navBar = m("div")
     m("div")
       .addClass("col text-end")
       .append(
+        createLinkElem("records-cards.html", { text: "Cards" }),
+        " | ",
         createLinkElem("records-days.html", { text: "Days" }),
         " | ",
         createLinkElem("records-months.html", { text: "Months" }),
@@ -93,11 +95,10 @@ const RecordItemsTable = cc("table", {
 });
 
 const RecordItemsAlert = createAlert();
-const RecordItemsModal = createModal('lg');
+const RecordItemsModal = createModal("lg");
 
 $("#root").append(
   navBar.addClass("my-3"),
-  // m(IDToasts),
   m(RecordItemsModal),
   m(RecordItemsAlert).addClass("my-3"),
   m(RecordItemsTable).addClass("my-3")
