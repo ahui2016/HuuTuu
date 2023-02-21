@@ -4,7 +4,7 @@ const navBar = m("div").addClass('row').append(
     span(" .. Days (每日支出)")  
   ),
   m("div").addClass('col text-end').append(
-    createLinkElem("records-items.html", { text: "Items" }),
+    createLinkElem("records-list.html", { text: "List" }),
     " | ",
     createLinkElem("records-months.html", { text: "Months" }),
     " | ",

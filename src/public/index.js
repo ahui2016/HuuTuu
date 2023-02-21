@@ -93,7 +93,7 @@ $("#root").append(
   m("p")
     .addClass("text-end my-5")
     .append(
-      createLinkElem("records-items.html", { text: "Items" }),
+      createLinkElem("records-list.html", { text: "List" }),
       span(" | ").addClass("text-muted"),
       createLinkElem("records-days.html", { text: "Days" })
     )
