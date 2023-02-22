@@ -119,15 +119,15 @@ async function init() {
     RecordCardsAlert.insert("info", `正在展示最近的帳目`);
   }
 
-  await initRecordCards();
+  await initRecordCards(url);
   const photos = await getPhotos();
   initPhotos(photos);
 }
 
-function initRecordCards() {
+function initRecordCards(url) {
   return new Promise((resolve) => {
     axiosGet({
-      url: "/api/all-records",
+      url: url,
       alert: RecordCardsAlert,
       onSuccess: (resp) => {
         const records = resp.data;
