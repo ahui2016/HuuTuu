@@ -13,7 +13,9 @@ const navBar = m("div")
     m("div")
       .addClass("col text-end")
       .append(
-        createLinkElem("records-cards.html", { text: "Cards" }),
+        createLinkElem("records-cards.html", { text: "Cards" }).addClass(
+          "CardsLink"
+        ),
         " | ",
         createLinkElem("records-days.html", { text: "Days" }),
         " | ",
@@ -107,11 +109,15 @@ $("#root").append(
 init();
 
 async function init() {
-  const day = getUrlParam('day');
+  const day = getUrlParam("day");
   let url = "/api/all-records";
 
   if (day) {
+    RecordItemsAlert.insert("info", `正在展示 ${day} 一天的帳目`);
     url = `/api/records-by-day?day=${day}`;
+    $('.CardsLink').attr({href: `records-cards.html?day=${day}`});
+  } else {
+    RecordItemsAlert.insert("info", `正在展示最近的帳目`);
   }
 
   await initRecordItems(url);

@@ -1,3 +1,5 @@
+const maxWidth = "38rem";
+
 const pageTitle = m("h5")
   .text("HuuTuu")
   .addClass("display-5")
@@ -7,7 +9,7 @@ const pageTitle = m("h5")
   });
 const pageSubtitle = m("p").text("糊塗記帳 ・ 難得糊塗").addClass(".lead");
 const pageNavBar = m("div").append(
-  createLinkElem("records-list.html", { text: "List" }),
+  createLinkElem("records-list.html", { text: "List" }).addClass("ListLink"),
   " | ",
   createLinkElem("records-days.html", { text: "Days" }),
   " | ",
@@ -42,8 +44,8 @@ function RecordCardItem(record) {
   return cc("div", {
     id: `R-${record.id}`,
     attr: { "data-id": record.id },
-    classes: "RecordCard card border-secondary mx-auto mb-5",
-    css: { maxWidth: "38rem" },
+    classes: "RecordCard card text-bg-light mx-auto mb-5",
+    css: { maxWidth: maxWidth },
     children: [
       m("div")
         .addClass("card-body text-dark")
@@ -99,13 +101,24 @@ const RecordCardsAlert = createAlert();
 
 $("#root").append(
   pageTitleArea.addClass("my-5"),
-  m(RecordCardsAlert).addClass("my-5"),
+  m(RecordCardsAlert).addClass("my-5 mx-auto").css({ maxWidth: maxWidth }),
   m(RecordCardsList).addClass("my-5")
 );
 
 init();
 
 async function init() {
+  const day = getUrlParam("day");
+  let url = "/api/all-records";
+
+  if (day) {
+    RecordCardsAlert.insert("info", `正在展示 ${day} 一天的帳目`);
+    url = `/api/records-by-day?day=${day}`;
+    $(".ListLink").attr({ href: `records-list.html?day=${day}` });
+  } else {
+    RecordCardsAlert.insert("info", `正在展示最近的帳目`);
+  }
+
   await initRecordCards();
   const photos = await getPhotos();
   initPhotos(photos);
@@ -149,7 +162,7 @@ function initPhotos(photos) {
       const photoURL = `photos/${id}${photos[id]}`;
       $(this).prepend(
         (img = m("img")
-          .addClass("card-img-top")
+          .addClass("card-img-top img-thumbnail")
           .attr({ src: photoURL, alt: photoURL }))
       );
     }
