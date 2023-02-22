@@ -143,8 +143,9 @@ function createAlert() {
  * Toast.popup(body, title?);
  * ```
  */
-function createToasts() {
-  const self = cc("div", { classes: "toast-container" });
+function createToasts(classes) {
+  if (!classes) classes = "toast-container position-fixed";
+  const self = cc("div", { classes: classes });
 
   self.new = () => {
     const Toast = createToast();

@@ -20,7 +20,9 @@ const navBar = m("div")
       )
   );
 
-const IDToasts = createToasts();
+const IDToasts = createToasts(
+  "toast-container position-fixed top-50 start-50 translate-middle"
+);
 $("#root").append(m(IDToasts));
 const IDToast = IDToasts.new();
 
@@ -53,7 +55,8 @@ function RecordCardItem(record) {
             .addClass("RecordTime text-end")
             .append(
               recordTime,
-              m(IDBtn).on("click", () => {
+              m(IDBtn).on("click", (event) => {
+                event.preventDefault();
                 copyToClipboard2(
                   record.id,
                   () => {

@@ -24,8 +24,8 @@ const navBar = m("div")
   );
 
 const IDToasts = createToasts();
+// const IDToasts = createToasts("toast-container position-fixed top-50 start-50 translate-middle");
 $("#root").append(m(IDToasts));
-// IDToasts.elem().addClass("top-50 start-50 translate-middle");
 const IDToast = IDToasts.new();
 
 /**
