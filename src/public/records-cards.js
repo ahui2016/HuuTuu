@@ -1,24 +1,24 @@
-const navBar = m("div")
-  .addClass("row")
-  .append(
-    m("div")
-      .addClass("col text-start")
-      .append(
-        createLinkElem("index.html", { text: "HuuTuu" }),
-        span(" .. 流水帳(卡片)")
-      ),
-    m("div")
-      .addClass("col text-end")
-      .append(
-        createLinkElem("records-list.html", { text: "List" }),
-        " | ",
-        createLinkElem("records-days.html", { text: "Days" }),
-        " | ",
-        createLinkElem("records-months.html", { text: "Months" }),
-        " | ",
-        createLinkElem("records-years.html", { text: "Years" })
-      )
-  );
+const pageTitle = m("h5")
+  .text("HuuTuu")
+  .addClass("display-5")
+  .css({ cursor: "pointer" })
+  .on("click", () => {
+    window.location = "index.html";
+  });
+const pageSubtitle = m("p").text("糊塗記帳 ・ 難得糊塗").addClass(".lead");
+const pageNavBar = m("div").append(
+  createLinkElem("records-list.html", { text: "List" }),
+  " | ",
+  createLinkElem("records-days.html", { text: "Days" }),
+  " | ",
+  createLinkElem("records-months.html", { text: "Months" }),
+  " | ",
+  createLinkElem("records-years.html", { text: "Years" })
+);
+
+const pageTitleArea = m("div")
+  .addClass("text-center")
+  .append(pageTitle, pageSubtitle, pageNavBar);
 
 const IDToasts = createToasts(
   "toast-container position-fixed top-50 start-50 translate-middle"
@@ -98,9 +98,9 @@ const RecordCardsList = cc("div");
 const RecordCardsAlert = createAlert();
 
 $("#root").append(
-  navBar.addClass("my-3"),
-  m(RecordCardsAlert).addClass("my-3"),
-  m(RecordCardsList).addClass("my-3")
+  pageTitleArea.addClass("my-5"),
+  m(RecordCardsAlert).addClass("my-5"),
+  m(RecordCardsList).addClass("my-5")
 );
 
 init();

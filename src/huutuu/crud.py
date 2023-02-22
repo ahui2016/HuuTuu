@@ -8,7 +8,6 @@ from sqlalchemy.orm import Session
 
 from . import model, forms
 
-
 First_Label_ID = 1
 
 
@@ -94,6 +93,20 @@ def get_all_records(
         .order_by(model.Record.dt.desc())
         .offset(skip)
         .limit(limit)
+    ).all()
+
+
+def get_records_by_dt(db: Session, start: int, end: int) -> Sequence[model.Record]:
+    """
+    start, end 是時間戳, 篩選條件是 Record.dt >= start and Record.dt <= end
+    """
+    return db.scalars(
+        select(model.Record)
+        .order_by(model.Record.dt.desc())
+        .where(
+            model.Record.dt >= start,
+            model.Record.dt <= end
+        )
     ).all()
 
 

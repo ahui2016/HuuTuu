@@ -10,10 +10,6 @@ const navBar = m("div")
     m("div")
       .addClass("col text-end")
       .append(
-        createLinkElem("records-cards.html", { text: "Cards" }),
-        " | ",
-        createLinkElem("records-list.html", { text: "List" }),
-        " | ",
         createLinkElem("records-months.html", { text: "Months" }),
         " | ",
         createLinkElem("records-years.html", { text: "Years" })
@@ -24,7 +20,11 @@ function DaysTableRow(dateAmount) {
   const labels = dateAmount.labels.join(", ");
   return cc("tr", {
     children: [
-      m("td").text(dateAmount.date),
+      m("td").append(
+        createLinkElem(`records-list.html?day=${dateAmount.date}`, {
+          text: dateAmount.date,
+        }).addClass("text-decoration-none link-dark")
+      ),
       m("td").text(`${moneyBar(dateAmount.amount)}(￥${dateAmount.amount})`),
       m("td").append(labels).addClass("text-nowrap"),
     ],

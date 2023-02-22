@@ -107,15 +107,22 @@ $("#root").append(
 init();
 
 async function init() {
-  await initRecordItems();
+  const day = getUrlParam('day');
+  let url = "/api/all-records";
+
+  if (day) {
+    url = `/api/records-by-day?day=${day}`;
+  }
+
+  await initRecordItems(url);
   const photos = await getPhotos();
   initPhotos(photos);
 }
 
-function initRecordItems() {
+function initRecordItems(url) {
   return new Promise((resolve) => {
     axiosGet({
-      url: "/api/all-records",
+      url: url,
       alert: RecordItemsAlert,
       onSuccess: (resp) => {
         const records = resp.data;

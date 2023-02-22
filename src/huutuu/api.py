@@ -77,6 +77,18 @@ def get_all_records(
     return crud.get_all_records(db, skip=skip, limit=limit)
 
 
+@router.get('/records-by-day', response_model=list[forms.RecordWithLabel])
+def get_records_by_day(day: str, db: Session = Depends(get_db)):
+    dt_format = 'YYYY-MM-DD HH:mm:ss'
+    try:
+        start = arrow.get(f'{day} 00:00:00', dt_format).int_timestamp
+        end = arrow.get(f'{day} 23:59:59', dt_format).int_timestamp
+    except ValueError as err:
+        raise HTTPException(status_code=400, detail=f'{err}')
+
+    return crud.get_records_by_dt(db, start, end)
+
+
 @router.get('/records-days', response_model=list[forms.DateAmount])
 def get_records_days(
         skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
