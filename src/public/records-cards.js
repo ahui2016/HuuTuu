@@ -5,7 +5,7 @@ const navBar = m("div")
       .addClass("col text-start")
       .append(
         createLinkElem("index.html", { text: "HuuTuu" }),
-        span(" .. 流水帳(卡片))")
+        span(" .. 流水帳(卡片)")
       ),
     m("div")
       .addClass("col text-end")
@@ -37,7 +37,7 @@ function RecordCardItem(record) {
     classes: "text-decoration-none ms-1",
   });
 
-  const recordTime = dayjs.unix(record.dt).format("YYYY-MM-DD HH:mm:ss");
+  const recordTime = dayjs.unix(record.dt).format("YYYY-MM-DD");
 
   return cc("div", {
     id: `R-${record.id}`,
@@ -48,9 +48,17 @@ function RecordCardItem(record) {
       m("div")
         .addClass("card-body text-dark")
         .append(
-          m("div").addClass("card-title fs-3").text(record.label.name),
+          m("div")
+            .addClass("row fs-4 fw-bold")
+            .append(
+              m("div")
+                .addClass("card-title col text-start")
+                .text(record.label.name),
+              m("p")
+                .addClass("card-text col text-end")
+                .text(`￥${record.amount}`)
+            ),
           m("p").addClass("RecordNotes text-muted").text(record.notes),
-          m("p").addClass("card-text fs-4 fw-bold").text(`￥${record.amount}`),
           m("div")
             .addClass("RecordTime text-end")
             .append(
