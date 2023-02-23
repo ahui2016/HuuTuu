@@ -1,6 +1,8 @@
 // 这些 class 只是为了方便生成文档，不实际使用。
 class RecordWithLabel {}
 
+const day = getUrlParam("day");
+
 const navBar = m("div")
   .addClass("row")
   .append(
@@ -25,7 +27,6 @@ const navBar = m("div")
       )
   );
 
-const DateFormat = "YYYY-MM-DD";
 const RecordItemsAlert = MJBS.createAlert();
 const RecordItemsModal = MJBS.createModal("lg");
 const PageNav = MJBS.createSimplePageNav("lg", "center");
@@ -63,7 +64,7 @@ function RecordItemsTableRow(record) {
         .attr({ "data-id": record.id })
         .addClass("ID-Column text-nowrap")
         .append(
-          MJBS.span(dayjs.unix(record.dt).format(DateFormat)).addClass(
+          MJBS.span(dayjs.unix(record.dt).format(DateFormatYMD)).addClass(
             "RecordDate"
           ),
           m(IDBtn).on("click", () => {
@@ -114,7 +115,6 @@ $("#root").append(
 init();
 
 async function init() {
-  const day = getUrlParam("day");
   let url = "/api/all-records";
 
   if (day) {
@@ -134,8 +134,8 @@ async function init() {
 function showPageNav_by_day(today) {
   const oneDay = 24 * 60 * 60;
   const timestamp = dayjs(today).unix();
-  const tomorrow = dayjs.unix(timestamp + oneDay).format(DateFormat);
-  const yesterday = dayjs.unix(timestamp - oneDay).format(DateFormat);
+  const tomorrow = dayjs.unix(timestamp + oneDay).format(DateFormatYMD);
+  const yesterday = dayjs.unix(timestamp - oneDay).format(DateFormatYMD);
 
   PageNav.show();
   PageNav.setThisPage(today);
@@ -155,12 +155,14 @@ function initRecordItems(url) {
             RecordItemsTableBody,
             records.map(RecordItemsTableRow)
           );
-          const today = dayjs.unix(records[0].dt).format(DateFormat);
+          const today = dayjs.unix(records[0].dt).format(DateFormatYMD);
           const amountSum = records.reduce(
             (acc, record) => acc + record.amount,
             0
           );
-          RecordItemsAlert.insert("light", `${today} 合計: ${amountSum} 圓`, '');
+          if (day) {
+            RecordItemsAlert.insert("light", `${today} 合計: ${amountSum} 圓`, '');
+          }
         } else {
           RecordItemsAlert.insert("info", "未找到相關數據", '');
         }

@@ -10,6 +10,11 @@ const navBar = m("div")
     m("div")
       .addClass("col text-end")
       .append(
+        MJBS.createLinkElem("records-list.html", {
+          text: "Recent",
+          title: "最近帳目",
+        }),
+        " | ",
         MJBS.createLinkElem("records-months.html", { text: "Months" }),
         " | ",
         MJBS.createLinkElem("records-years.html", { text: "Years" })

@@ -1,3 +1,4 @@
+const day = getUrlParam("day");
 const maxWidth = "38rem";
 
 const pageTitle = m("h5")
@@ -30,6 +31,9 @@ const IDToasts = MJBS.createToasts(
 $("#root").append(m(IDToasts));
 const IDToast = IDToasts.new();
 
+const RecordCardsAlert = MJBS.createAlert();
+const PageNav = MJBS.createSimplePageNav("lg", "center");
+
 /**
  * @param {RecordWithLabel} record
  * @returns {mjComponent}
@@ -41,7 +45,7 @@ function RecordCardItem(record) {
     classes: "text-decoration-none ms-1",
   });
 
-  const recordTime = dayjs.unix(record.dt).format("YYYY-MM-DD");
+  const recordTime = dayjs.unix(record.dt).format(DateFormatYMD);
 
   return cc("div", {
     id: `R-${record.id}`,
@@ -99,24 +103,23 @@ function RecordCardItem(record) {
 
 const RecordCardsList = cc("div");
 
-const RecordCardsAlert = MJBS.createAlert();
-
 $("#root").append(
   pageTitleArea.addClass("my-5"),
   m(RecordCardsAlert).addClass("my-5 mx-auto").css({ maxWidth: maxWidth }),
-  m(RecordCardsList).addClass("my-5")
+  m(RecordCardsList).addClass("my-5"),
+  m(PageNav).addClass("my-5").hide()
 );
 
 init();
 
 async function init() {
-  const day = getUrlParam("day");
   let url = "/api/all-records";
 
   if (day) {
-    RecordCardsAlert.insert("info", `正在展示 ${day} 一天的帳目`);
+    RecordCardsAlert.insert("secondary", `正在展示 ${day} 一天的帳目`, "");
     url = `/api/records-by-day?day=${day}`;
     $(".ListLink").attr({ href: `records-list.html?day=${day}` });
+    showPageNav_by_day(day, PageNav);
   } else {
     RecordCardsAlert.insert("info", `正在展示最近的帳目`);
   }
@@ -135,8 +138,20 @@ function initRecordCards(url) {
         const records = resp.data;
         if (records && records.length > 0) {
           MJBS.appendToList(RecordCardsList, records.map(RecordCardItem));
+          const today = dayjs.unix(records[0].dt).format(DateFormatYMD);
+          const amountSum = records.reduce(
+            (acc, record) => acc + record.amount,
+            0
+          );
+          if (day) {
+            RecordCardsAlert.insert(
+              "light",
+              `${today} 合計: ${amountSum} 圓`,
+              ""
+            );
+          }
         } else {
-          RecordCardsAlert.insert("info", "暫無數據");
+          RecordCardsAlert.insert("info", "未找到相關數據");
         }
         resolve();
       },
