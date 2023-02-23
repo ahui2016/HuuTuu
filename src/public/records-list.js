@@ -25,6 +25,11 @@ const navBar = m("div")
       )
   );
 
+const DateFormat = "YYYY-MM-DD";
+const RecordItemsAlert = MJBS.createAlert();
+const RecordItemsModal = MJBS.createModal("lg");
+const PageNav = MJBS.createSimplePageNav("lg", "center");
+
 const IDToasts = MJBS.createToasts();
 // const IDToasts = createToasts("toast-container position-fixed top-50 start-50 translate-middle");
 $("#root").append(m(IDToasts));
@@ -58,7 +63,7 @@ function RecordItemsTableRow(record) {
         .attr({ "data-id": record.id })
         .addClass("ID-Column text-nowrap")
         .append(
-          MJBS.span(dayjs.unix(record.dt).format("YYYY-MM-DD")).addClass(
+          MJBS.span(dayjs.unix(record.dt).format(DateFormat)).addClass(
             "RecordDate"
           ),
           m(IDBtn).on("click", () => {
@@ -98,14 +103,12 @@ const RecordItemsTable = cc("table", {
   children: [m(RecordItemsTableBody)],
 });
 
-const RecordItemsAlert = MJBS.createAlert();
-const RecordItemsModal = MJBS.createModal("lg");
-
 $("#root").append(
   navBar.addClass("my-3"),
   m(RecordItemsModal),
   m(RecordItemsAlert).addClass("my-3"),
-  m(RecordItemsTable).addClass("my-3")
+  m(RecordItemsTable).addClass("my-3"),
+  m(PageNav).addClass("my-5").hide()
 );
 
 init();
@@ -115,9 +118,10 @@ async function init() {
   let url = "/api/all-records";
 
   if (day) {
-    RecordItemsAlert.insert("info", `正在展示 ${day} 一天的帳目`);
+    RecordItemsAlert.insert("secondary", `正在展示 ${day} 一天的帳目`, '');
     url = `/api/records-by-day?day=${day}`;
     $(".CardsLink").attr({ href: `records-cards.html?day=${day}` });
+    showPageNav_by_day(day);
   } else {
     RecordItemsAlert.insert("info", `正在展示最近的帳目`);
   }
@@ -125,6 +129,18 @@ async function init() {
   await initRecordItems(url);
   const photos = await getPhotos();
   initPhotos(photos);
+}
+
+function showPageNav_by_day(today) {
+  const oneDay = 24 * 60 * 60;
+  const timestamp = dayjs(today).unix();
+  const tomorrow = dayjs.unix(timestamp + oneDay).format(DateFormat);
+  const yesterday = dayjs.unix(timestamp - oneDay).format(DateFormat);
+
+  PageNav.show();
+  PageNav.setThisPage(today);
+  PageNav.setPreviousPage(`?day=${yesterday}`, `⬅️${yesterday}`);
+  PageNav.setNextPage(`?day=${tomorrow}`, `${tomorrow}➡️`);
 }
 
 function initRecordItems(url) {
@@ -139,8 +155,14 @@ function initRecordItems(url) {
             RecordItemsTableBody,
             records.map(RecordItemsTableRow)
           );
+          const today = dayjs.unix(records[0].dt).format(DateFormat);
+          const amountSum = records.reduce(
+            (acc, record) => acc + record.amount,
+            0
+          );
+          RecordItemsAlert.insert("light", `${today} 合計: ${amountSum} 圓`, '');
         } else {
-          RecordItemsAlert.insert("info", "暫無數據");
+          RecordItemsAlert.insert("info", "未找到相關數據", '');
         }
         resolve();
       },

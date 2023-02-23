@@ -98,9 +98,10 @@ MJBS.createAlert = function () {
    * msgType: primary/secondary/success/danger/warning/info/light/dark
    * @param {string} msgType
    * @param {string} msg
+   * @param {string?} time
    */
-  alert.insert = (msgType, msg) => {
-    const time = dayjs().format("HH:mm:ss");
+  alert.insert = (msgType, msg, time) => {
+    if (typeof time != 'string' && !time) time = dayjs().format("HH:mm:ss");
     const timeMsg = `${time} ${msg}`;
     if (msgType == "danger") console.log(timeMsg);
 
@@ -420,6 +421,52 @@ MJBS.createButton = function (name, color) {
     attr: { type: "button" },
   });
 }
+
+/**
+ * 使用方法:
+ * ```
+ * const PageNav = MJBS.createSimplePageNav('lg', 'center');
+ * PageNav.setThisPage(text);
+ * PageNav.setPreviousPage(href, text);
+ * PageNav.setNextPage(href, text);
+ * ```
+ * @param {string?} size 'lg' | 'sm' | null
+ * @param {string?} align 'center' | 'end' | null
+ * @returns {mjComponent}
+ */
+MJBS.createSimplePageNav = (size, align) => {
+  const PreviousPage = cc("a", { classes: "page-link", attr: { href: "#" } });
+  const ThisPage = cc("a", { classes: "page-link disabled text-bg-light text-muted" });
+  const NextPage = cc("a", { classes: "page-link", attr: { href: "#" } });
+  
+  let classes = "pagination";
+  if (size) classes = `${classes} pagination-${size}`;
+  if (align) classes = `${classes} justify-content-${align}`;
+
+  const PageNav = cc("nav", {
+    attr: { "aria-label": "Page navigation" },
+    children: [
+      m("ul")
+        .addClass(classes)
+        .append(
+          m("li").addClass("page-item").append(m(PreviousPage)),
+          m("li").addClass("page-item").append(m(ThisPage)),
+          m("li").addClass("page-item").append(m(NextPage))
+        ),
+    ],
+  });
+  
+  PageNav.setThisPage = (text) => {
+    ThisPage.elem().text(text);
+  };
+  PageNav.setPreviousPage = (href, text) => {
+    PreviousPage.elem().attr({href: href}).text(text);
+  };
+  PageNav.setNextPage = (href, text) => {
+    NextPage.elem().attr({href: href}).text(text);
+  };
+  return PageNav;
+};
 
 /**
  * 如果 id 以数字开头，就需要使用 elemID 给它改成以字母开头，
