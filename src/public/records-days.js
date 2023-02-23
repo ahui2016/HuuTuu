@@ -4,15 +4,15 @@ const navBar = m("div")
     m("div")
       .addClass("col text-start")
       .append(
-        createLinkElem("index.html", { text: "HuuTuu" }),
-        span(" .. Days (每日支出)")
+        MJBS.createLinkElem("index.html", { text: "HuuTuu" }),
+        MJBS.span(" .. Days (每日支出)")
       ),
     m("div")
       .addClass("col text-end")
       .append(
-        createLinkElem("records-months.html", { text: "Months" }),
+        MJBS.createLinkElem("records-months.html", { text: "Months" }),
         " | ",
-        createLinkElem("records-years.html", { text: "Years" })
+        MJBS.createLinkElem("records-years.html", { text: "Years" })
       )
   );
 
@@ -21,7 +21,7 @@ function DaysTableRow(dateAmount) {
   return cc("tr", {
     children: [
       m("td").append(
-        createLinkElem(`records-list.html?day=${dateAmount.date}`, {
+        MJBS.createLinkElem(`records-list.html?day=${dateAmount.date}`, {
           text: dateAmount.date,
         }).addClass("text-decoration-none link-dark")
       ),
@@ -38,7 +38,7 @@ const DaysTable = cc("table", {
   children: [m(DaysTableBody)],
 });
 
-const DaysTableAlert = createAlert();
+const DaysTableAlert = MJBS.createAlert();
 
 $("#root").append(
   navBar.addClass("my-3"),
@@ -59,7 +59,7 @@ function initRecordItems() {
     onSuccess: (resp) => {
       const data = resp.data;
       if (data && data.length > 0) {
-        appendToList(DaysTableBody, data.map(DaysTableRow));
+        MJBS.appendToList(DaysTableBody, data.map(DaysTableRow));
       } else {
         DaysTableAlert.insert("info", "暫無數據");
       }

@@ -17,9 +17,9 @@ const pageTitleArea = m("div")
   .append(pageTitle, pageSubtitle)
   .addClass("text-center");
 
-const AppSubmitBtn = createButton("submit", "primary");
-const AppCancelBtn = createButton("cancel", "secondary");
-const AppReloadBtn = createButton("再記一筆", "success");
+const AppSubmitBtn = MJBS.createButton("submit", "primary");
+const AppCancelBtn = MJBS.createButton("cancel", "secondary");
+const AppReloadBtn = MJBS.createButton("再記一筆", "success");
 
 const RecordArea = cc("div", {
   classes: "card border-secondary mx-auto",
@@ -81,7 +81,7 @@ const RecordArea = cc("div", {
   ],
 });
 
-const AppAlert = createAlert();
+const AppAlert = MJBS.createAlert();
 
 $("#root").append(
   pageTitleArea.addClass("my-5"),
@@ -93,11 +93,11 @@ $("#root").append(
   m("p")
     .addClass("text-end my-5")
     .append(
-      createLinkElem("records-cards.html", { text: "Cards" }),
-      span(" | ").addClass("text-muted"),
-      createLinkElem("records-list.html", { text: "List" }),
-      span(" | ").addClass("text-muted"),
-      createLinkElem("records-days.html", { text: "Days" })
+      MJBS.createLinkElem("records-cards.html", { text: "Cards" }),
+      MJBS.span(" | ").addClass("text-muted"),
+      MJBS.createLinkElem("records-list.html", { text: "List" }),
+      MJBS.span(" | ").addClass("text-muted"),
+      MJBS.createLinkElem("records-days.html", { text: "Days" })
     )
 );
 
@@ -116,11 +116,11 @@ function initLabels() {
     onSuccess: (resp) => {
       const labels = resp.data;
       if (labels && labels.length > 0) {
-        appendToList(LabelList, labels.map(LabelItem));
+        MJBS.appendToList(LabelList, labels.map(LabelItem));
       } else {
         AppAlert.insert("info", "無預設標籤, 請新增標籤.");
         FormArea_CreateLabel.show();
-        focus(LabelNameInput);
+        MJBS.focus(LabelNameInput);
       }
     },
   });

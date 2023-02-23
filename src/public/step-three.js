@@ -7,8 +7,8 @@ const predefinedNotes = [
   "大家樂",
 ];
 
-const NotesInput = createInput("text");
-const SetNotesBtn = createButton("Enter", "primary");
+const NotesInput = MJBS.createInput("text");
+const SetNotesBtn = MJBS.createButton("Enter", "primary");
 
 const Form_Notes = cc("form", {
   attr: { autocomplete: "off" },
@@ -29,9 +29,9 @@ const Form_Notes = cc("form", {
           .attr({ type: "submit" })
           .on("click", (event) => {
             event.preventDefault();
-            const notes = valOf(NotesInput, "trim");
+            const notes = MJBS.valOf(NotesInput, "trim");
             RecordArea.find(".RecordNotes").show().text(notes);
-            focus(NotesInput);
+            MJBS.focus(NotesInput);
             window["my-record"].notes = notes;
           })
       ),
@@ -43,15 +43,15 @@ const Form_Notes = cc("form", {
  * @returns {mjComponent}
  */
 function NotesItem(text) {
-  const self = createButton(text, "light");
+  const self = MJBS.createButton(text, "light");
 
   self.init = () => {
     self.elem().on("click", (event) => {
       event.preventDefault();
-      let notes = valOf(NotesInput);
+      let notes = MJBS.valOf(NotesInput);
       notes = `${notes} ${text}`;
       NotesInput.elem().val(notes);
-      focus(NotesInput);
+      MJBS.focus(NotesInput);
     });
   };
 
@@ -61,7 +61,7 @@ function NotesItem(text) {
 const NotesList = cc("div", { classes: "d-flex flex-wrap gap-3" });
 
 NotesList.init = () => {
-  appendToList(NotesList, predefinedNotes.map(NotesItem));
+  MJBS.appendToList(NotesList, predefinedNotes.map(NotesItem));
 };
 
 const StepThree = cc("div", {
@@ -71,8 +71,8 @@ const StepThree = cc("div", {
       m("li").text("你可不輸入備註, 現在按 Submit 按鈕完成一筆記帳"),
       m("li").text("也可輸入備註, 按 Enter 設置備註後再按 Submit 提交表單"),
       m("li").append(
-        span("設置常用備註的方法詳見 "),
-        createLinkElem("https://github.com/ahui2016/HuuTuu", {
+        MJBS.span("設置常用備註的方法詳見 "),
+        MJBS.createLinkElem("https://github.com/ahui2016/HuuTuu", {
           text: "github.com/ahui2016/HuuTuu",
           blank: true,
         })

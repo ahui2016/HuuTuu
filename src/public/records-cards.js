@@ -9,20 +9,22 @@ const pageTitle = m("h5")
   });
 const pageSubtitle = m("p").text("糊塗記帳 ・ 難得糊塗").addClass(".lead");
 const pageNavBar = m("div").append(
-  createLinkElem("records-list.html", { text: "List" }).addClass("ListLink"),
+  MJBS.createLinkElem("records-list.html", { text: "List" }).addClass(
+    "ListLink"
+  ),
   " | ",
-  createLinkElem("records-days.html", { text: "Days" }),
+  MJBS.createLinkElem("records-days.html", { text: "Days" }),
   " | ",
-  createLinkElem("records-months.html", { text: "Months" }),
+  MJBS.createLinkElem("records-months.html", { text: "Months" }),
   " | ",
-  createLinkElem("records-years.html", { text: "Years" })
+  MJBS.createLinkElem("records-years.html", { text: "Years" })
 );
 
 const pageTitleArea = m("div")
   .addClass("text-center")
   .append(pageTitle, pageSubtitle, pageNavBar);
 
-const IDToasts = createToasts(
+const IDToasts = MJBS.createToasts(
   "toast-container position-fixed top-50 start-50 translate-middle"
 );
 $("#root").append(m(IDToasts));
@@ -97,7 +99,7 @@ function RecordCardItem(record) {
 
 const RecordCardsList = cc("div");
 
-const RecordCardsAlert = createAlert();
+const RecordCardsAlert = MJBS.createAlert();
 
 $("#root").append(
   pageTitleArea.addClass("my-5"),
@@ -132,7 +134,7 @@ function initRecordCards(url) {
       onSuccess: (resp) => {
         const records = resp.data;
         if (records && records.length > 0) {
-          appendToList(RecordCardsList, records.map(RecordCardItem));
+          MJBS.appendToList(RecordCardsList, records.map(RecordCardItem));
         } else {
           RecordCardsAlert.insert("info", "暫無數據");
         }
@@ -161,9 +163,9 @@ function initPhotos(photos) {
     if (id in photos) {
       const photoURL = `photos/${id}${photos[id]}`;
       $(this).prepend(
-        (img = m("img")
+        m("img")
           .addClass("card-img-top img-thumbnail")
-          .attr({ src: photoURL, alt: photoURL }))
+          .attr({ src: photoURL, alt: photoURL })
       );
     }
   });

@@ -6,7 +6,7 @@ const LabelList = cc("div", { classes: "d-flex flex-wrap gap-3" });
  */
 function LabelItem(label) {
   const self = cc("button", {
-    id: elemID(label.id, "label"),
+    id: MJBS.elemID(label.id, "label"),
     text: label.name,
     attr: { type: "button" },
     classes: "btn rounded-pill btn-success",
@@ -31,9 +31,9 @@ function LabelItem(label) {
   return self;
 }
 
-const FormAlert_CreateLabel = createAlert();
-const LabelNameInput = createInput("text", "required");
-const CreateLabelBtn = createButton("Create", "primary");
+const FormAlert_CreateLabel = MJBS.createAlert();
+const LabelNameInput = MJBS.createInput("text", "required");
+const CreateLabelBtn = MJBS.createButton("Create", "primary");
 
 const Form_CreateLabel = cc("form", {
   attr: { autocomplete: "off" },
@@ -50,20 +50,20 @@ const Form_CreateLabel = cc("form", {
           .attr({ placeholder: "新標籤" }),
 
         // hidden button
-        hiddenButtonElem(),
+        MJBS.hiddenButtonElem(),
 
         // submit button
         m(CreateLabelBtn).on("click", (event) => {
           event.preventDefault();
-          const name = valOf(LabelNameInput, "trim");
+          const name = MJBS.valOf(LabelNameInput, "trim");
           if (!name) {
             FormAlert_CreateLabel.insert("warning", "必須填寫標籤名");
-            focus(LabelNameInput);
+            MJBS.focus(LabelNameInput);
             return;
           }
           if (hasWhiteSpace(name)) {
             FormAlert_CreateLabel.insert("danger", "標籤不可包含空格");
-            focus(LabelNameInput);
+            MJBS.focus(LabelNameInput);
             return;
           }
           axiosPost({
@@ -80,7 +80,7 @@ const Form_CreateLabel = cc("form", {
               LabelList.elem().prepend(m(Item));
               Item.init();
               LabelNameInput.elem().val("");
-              focus(LabelNameInput);
+              MJBS.focus(LabelNameInput);
             },
           });
         })
@@ -95,7 +95,7 @@ const FormArea_CreateLabel = cc("div", {
   ],
 });
 
-const ToggleCreateLabelBtn = createButton("新建標籤", "link");
+const ToggleCreateLabelBtn = MJBS.createButton("新建標籤", "link");
 
 const StepOne = cc("div", {
   children: [
@@ -103,13 +103,13 @@ const StepOne = cc("div", {
     m("p")
       .addClass("my-3")
       .append(
-        span("請點撃標籤, 或"),
+        MJBS.span("請點撃標籤, 或"),
         m(ToggleCreateLabelBtn).on("click", (event) => {
           event.preventDefault();
           FormArea_CreateLabel.show();
-          focus(LabelNameInput);
+          MJBS.focus(LabelNameInput);
         }),
-        span('後點擊標籤.')
+        MJBS.span('後點擊標籤.')
       ),
     m(FormArea_CreateLabel).addClass("my-3").hide(),
     m(LabelList).addClass("my-3"),

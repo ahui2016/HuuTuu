@@ -5,7 +5,7 @@
 function MoneyItem(amount) {
   const val = amount.toFixed();
   const self = cc("button", {
-    id: elemID(val, "amount"),
+    id: MJBS.elemID(val, "amount"),
     text: val,
     attr: {type: 'button'},
     classes: "btn btn-outline-success",
@@ -22,7 +22,7 @@ function MoneyItem(amount) {
         complete: () => {
           AppSubmitBtn.show();
           StepThree.show();
-          focus(NotesInput);
+          MJBS.focus(NotesInput);
         },
       });
     });
@@ -34,7 +34,7 @@ function MoneyItem(amount) {
 const MoneyList = cc("div", { classes: 'd-flex flex-wrap gap-3' });
 
 MoneyList.init = () => {
-  appendToList(MoneyList, predefinedAmounts.map(MoneyItem));
+  MJBS.appendToList(MoneyList, predefinedAmounts.map(MoneyItem));
 };
 
 const StepTwo = cc('div', {

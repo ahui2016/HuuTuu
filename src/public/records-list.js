@@ -7,25 +7,25 @@ const navBar = m("div")
     m("div")
       .addClass("col text-start")
       .append(
-        createLinkElem("index.html", { text: "HuuTuu" }),
-        span(" .. Items (流水帳)")
+        MJBS.createLinkElem("index.html", { text: "HuuTuu" }),
+        MJBS.span(" .. Items (流水帳)")
       ),
     m("div")
       .addClass("col text-end")
       .append(
-        createLinkElem("records-cards.html", { text: "Cards" }).addClass(
+        MJBS.createLinkElem("records-cards.html", { text: "Cards" }).addClass(
           "CardsLink"
         ),
         " | ",
-        createLinkElem("records-days.html", { text: "Days" }),
+        MJBS.createLinkElem("records-days.html", { text: "Days" }),
         " | ",
-        createLinkElem("records-months.html", { text: "Months" }),
+        MJBS.createLinkElem("records-months.html", { text: "Months" }),
         " | ",
-        createLinkElem("records-years.html", { text: "Years" })
+        MJBS.createLinkElem("records-years.html", { text: "Years" })
       )
   );
 
-const IDToasts = createToasts();
+const IDToasts = MJBS.createToasts();
 // const IDToasts = createToasts("toast-container position-fixed top-50 start-50 translate-middle");
 $("#root").append(m(IDToasts));
 const IDToast = IDToasts.new();
@@ -37,10 +37,12 @@ const IDToast = IDToasts.new();
 function RecordItemsTableRow(record) {
   const label = m("div")
     .addClass("text-nowrap")
-    .append(span(record.label.name).addClass("RecordLabel"));
+    .append(MJBS.span(record.label.name).addClass("RecordLabel"));
 
   if (record.notes) {
-    label.append(span(record.notes).addClass("RecordNotes text-muted ms-2"));
+    label.append(
+      MJBS.span(record.notes).addClass("RecordNotes text-muted ms-2")
+    );
   }
 
   const IDBtn = cc("a", {
@@ -56,7 +58,7 @@ function RecordItemsTableRow(record) {
         .attr({ "data-id": record.id })
         .addClass("ID-Column text-nowrap")
         .append(
-          span(dayjs.unix(record.dt).format("YYYY-MM-DD")).addClass(
+          MJBS.span(dayjs.unix(record.dt).format("YYYY-MM-DD")).addClass(
             "RecordDate"
           ),
           m(IDBtn).on("click", () => {
@@ -96,8 +98,8 @@ const RecordItemsTable = cc("table", {
   children: [m(RecordItemsTableBody)],
 });
 
-const RecordItemsAlert = createAlert();
-const RecordItemsModal = createModal("lg");
+const RecordItemsAlert = MJBS.createAlert();
+const RecordItemsModal = MJBS.createModal("lg");
 
 $("#root").append(
   navBar.addClass("my-3"),
@@ -115,7 +117,7 @@ async function init() {
   if (day) {
     RecordItemsAlert.insert("info", `正在展示 ${day} 一天的帳目`);
     url = `/api/records-by-day?day=${day}`;
-    $('.CardsLink').attr({href: `records-cards.html?day=${day}`});
+    $(".CardsLink").attr({ href: `records-cards.html?day=${day}` });
   } else {
     RecordItemsAlert.insert("info", `正在展示最近的帳目`);
   }
@@ -133,7 +135,10 @@ function initRecordItems(url) {
       onSuccess: (resp) => {
         const records = resp.data;
         if (records && records.length > 0) {
-          appendToList(RecordItemsTableBody, records.map(RecordItemsTableRow));
+          MJBS.appendToList(
+            RecordItemsTableBody,
+            records.map(RecordItemsTableRow)
+          );
         } else {
           RecordItemsAlert.insert("info", "暫無數據");
         }

@@ -1,21 +1,13 @@
 // 这些 class 只是为了方便生成文档，不实际使用。
 class LinkOptions {}
 
-/**
- * 获取地址栏的参数。
- * @param {string} name
- * @returns {string | null}
- */
-function getUrlParam(name) {
-  const queryString = new URLSearchParams(document.location.search);
-  return queryString.get(name);
-}
+const MJBS = {};
 
 /**
  * obj 是 mjComponent 或 mjComponent 的 id.
  * @param {mjComponent | string} obj
  */
-function disable(obj) {
+MJBS.disable = function (obj) {
   const id = typeof obj == "string" ? obj : obj.id;
   const nodeName = $(id).prop("nodeName");
   if (nodeName == "BUTTON" || nodeName == "INPUT") {
@@ -23,13 +15,13 @@ function disable(obj) {
   } else {
     $(id).css("pointer-events", "none");
   }
-}
+};
 
 /**
  * obj 是 mjComponent 或 mjComponent 的 id.
  * @param {mjComponent | string} obj
  */
-function enable(obj) {
+MJBS.enable = function (obj) {
   const id = typeof obj == "string" ? obj : obj.id;
   const nodeName = $(id).prop("nodeName");
   if (nodeName == "BUTTON" || nodeName == "INPUT") {
@@ -37,7 +29,7 @@ function enable(obj) {
   } else {
     $(id).css("pointer-events", "auto");
   }
-}
+};
 
 /**
  * 使用 mjElement.append() 时，如果直接 append 字符串可以注入 html,
@@ -45,57 +37,57 @@ function enable(obj) {
  * @param {string} text
  * @returns {mjElement}
  */
-function span(text) {
+MJBS.span = function (text) {
   return m("span").text(text);
-}
+};
 
 /**
  * @param {mjComponent} list
  * @param {mjComponent[]} items
  */
-function prependToList(list, items) {
+MJBS.prependToList = function (list, items) {
   items.forEach((item) => {
     list.elem().prepend(m(item));
     if (item.init) item.init();
   });
-}
+};
 
 /**
  * @param {mjComponent} list
  * @param {mjComponent[]} items
  */
-function appendToList(list, items) {
+MJBS.appendToList = function (list, items) {
   items.forEach((item) => {
     list.elem().append(m(item));
     if (item.init) item.init();
   });
-}
+};
 
 /**
  * @param {mjElement | mjComponent} obj
  * @param {"trim"?} trim
  * @returns {string}
  */
-function valOf(obj, trim) {
+MJBS.valOf = function (obj, trim) {
   let s = "elem" in obj ? obj.elem().val() : obj.val();
   return trim == "trim" ? s.trim() : s;
-}
+};
 
 /**
  * @param {mjElement | mjComponent} obj
  * @param {number?} timeout default=300
  */
-function focus(obj, timeout = 300) {
+MJBS.focus = function (obj, timeout = 300) {
   if ("elem" in obj) obj = obj.elem();
   setTimeout(() => {
     obj.trigger("focus");
   }, timeout);
-}
+};
 
 /**
  * msgType: primary/secondary/success/danger/warning/info/light/dark
  */
-function createAlert() {
+MJBS.createAlert = function () {
   const alert = cc("div");
 
   alert.insertElem = (elem) => {
@@ -121,7 +113,7 @@ function createAlert() {
     const elem = m("div")
       .addClass(`alert alert-${msgType} alert-dismissible fade show my-1`)
       .attr({ role: "alert" })
-      .append(span(timeMsg), dismissBtn);
+      .append(MJBS.span(timeMsg), dismissBtn);
 
     alert.insertElem(elem);
   };
@@ -131,19 +123,19 @@ function createAlert() {
   };
 
   return alert;
-}
+};
 
 /**
  * 使用方法:
  * ```
- * const Toasts = createToasts();
+ * const Toasts = MJBS.createToasts();
  * $('#root').append(m(IDToasts)); // 必須立即實體化.
  * const Toast = Toasts.new();
  * // Toast.setTitle(title);
  * Toast.popup(body, title?);
  * ```
  */
-function createToasts(classes) {
+MJBS.createToasts = function (classes) {
   if (!classes) classes = "toast-container position-fixed";
   const self = cc("div", { classes: classes });
 
@@ -154,7 +146,7 @@ function createToasts(classes) {
   };
 
   return self;
-}
+};
 
 function createToast() {
   const self = cc("div", {
@@ -191,7 +183,7 @@ function createToast() {
     self.elem().removeClass().addClass(`toast text-bg-${color}`);
     if (title) self.find("strong").text(title);
     self.find("small").text(dayjs().format("HH:mm:ss"));
-    if (typeof body == "string") body = span(body);
+    if (typeof body == "string") body = MJBS.span(body);
     self.find(".toast-body").html("").append(body);
     const toast = new bootstrap.Toast(self.elem()[0]);
     toast.show();
@@ -203,7 +195,7 @@ function createToast() {
 /**
  * 使用方法:
  * ```
- * const MyModal = createModal(title, body, footer);
+ * const MyModal = MJBS.createStaticModal(title, body, footer);
  * const modalBtn = cc('button', {
  *   text: 'Launch the modal',
  *   classes: 'btn btn-primary',
@@ -214,7 +206,7 @@ function createToast() {
  * @param {mjElement | string} body
  * @param {mjElement | string | null} footer
  */
-function createStaticModal(title, body, footer) {
+MJBS.createStaticModal = function (title, body, footer) {
   if (typeof body == "string") {
     body = m("p").text(body);
   }
@@ -250,18 +242,18 @@ function createStaticModal(title, body, footer) {
   });
 
   return modal;
-}
+};
 
 /**
  * 使用方法:
  * ```
- * const MyModal = createModal('lg');
+ * const MyModal = MJBS.createModal('lg');
  * MyModal.popup(title, body, footer);
  * ```
  * @param {string?} size 'xl' | 'lg' | 'sm'
  * @returns {mjComponent}
  */
-function createModal(size) {
+MJBS.createModal = function (size) {
   let classes = "modal-dialog";
   if (size) {
     classes = `modal-dialog modal-${size}`;
@@ -321,14 +313,14 @@ function createModal(size) {
   };
 
   return modal;
-}
+};
 
 /**
  * @param {string} href
  * @param {LinkOptions?} options `{text?: string, title?: string, blank?: boolean}`
  * @returns {mjElement}
  */
-function createLinkElem(href, options) {
+MJBS.createLinkElem = function (href, options) {
   if (!options) {
     return m("a").text(href).attr("href", href);
   }
@@ -337,7 +329,7 @@ function createLinkElem(href, options) {
   if (options.title) link.attr("title", options.title);
   if (options.blank) link.attr("target", "_blank");
   return link;
-}
+};
 
 /**
  * @param {string} type default = "text"
@@ -345,26 +337,26 @@ function createLinkElem(href, options) {
  * @param {string?} id
  * @returns {mjComponent}
  */
-function createInput(type = "text", required = null, id = null) {
+MJBS.createInput = function (type = "text", required = null, id = null) {
   return cc("input", {
     id: id,
     classes: "form-control",
     attr: { type: type },
     prop: { required: required == "required" ? true : false },
   });
-}
+};
 
 /**
  * @param {number} rows default = 3
  * @returns {mjComponent}
  */
-function createTextarea(rows = 3, id = null) {
+MJBS.createTextarea = function (rows = 3, id = null) {
   return cc("textarea", {
     id: id,
     classes: "form-control",
     attr: { rows: rows },
   });
-}
+};
 
 /**
  * 主要用来给 input 或 textarea 包裹一层。
@@ -374,7 +366,12 @@ function createTextarea(rows = 3, id = null) {
  * @param {string} classes default = "mb-3"
  * @returns {mjElement}
  */
-function createFormControl(comp, labelText, description, classes = "mb-3") {
+MJBS.createFormControl = function (
+  comp,
+  labelText,
+  description,
+  classes = "mb-3"
+) {
   const formControl = m("div")
     .addClass(classes)
     .append(
@@ -394,12 +391,12 @@ function createFormControl(comp, labelText, description, classes = "mb-3") {
   }
   formControl.append(descElem);
   return formControl;
-}
+};
 
 /**
  * 这个按钮是隐藏不用的，为了防止按回车键提交表单
  */
-function hiddenButtonElem() {
+MJBS.hiddenButtonElem = function () {
   return m("button")
     .text("submit")
     .attr({ type: "submit" })
@@ -416,7 +413,7 @@ function hiddenButtonElem() {
  * @param {string} color
  * @returns {mjComponent}
  */
-function createButton(name, color) {
+MJBS.createButton = function (name, color) {
   return cc("button", {
     text: name,
     classes: `btn btn-${color}`,
@@ -431,9 +428,11 @@ function createButton(name, color) {
  * @param {string} prefix
  * @returns {string}
  */
-function elemID(id, prefix = "e") {
+MJBS.elemID = function (id, prefix = "e") {
   return `${prefix}${id}`;
 }
+
+// 以下是一些 helper functions
 
 /**
  * @param {string} text
@@ -532,6 +531,16 @@ function axiosPost(options) {
  */
 function hasWhiteSpace(s) {
   return /\s/g.test(s);
+}
+
+/**
+ * 获取地址栏的参数。
+ * @param {string} name
+ * @returns {string | null}
+ */
+function getUrlParam(name) {
+  const queryString = new URLSearchParams(document.location.search);
+  return queryString.get(name);
 }
 
 // 以下與 mj-bs.js 無關.
