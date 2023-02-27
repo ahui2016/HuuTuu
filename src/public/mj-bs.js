@@ -81,6 +81,7 @@ MJBS.focus = function (obj, timeout = 300) {
   if ("elem" in obj) obj = obj.elem();
   setTimeout(() => {
     obj.trigger("focus");
+    obj[0].setSelectionRange(1000, 1000);
   }, timeout);
 };
 

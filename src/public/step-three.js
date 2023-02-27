@@ -50,7 +50,7 @@ function NotesItem(text) {
       event.preventDefault();
       let notes = MJBS.valOf(NotesInput);
       notes = `${notes} ${text}`;
-      NotesInput.elem().val(notes);
+      NotesInput.elem().val(notes.trimStart());
       MJBS.focus(NotesInput);
     });
   };
