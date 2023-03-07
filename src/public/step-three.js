@@ -6,6 +6,7 @@ const predefinedNotes = [
   "麥當勞",
   "大家樂",
   "美團外賣會員",
+  "物業管理費",
 ];
 
 const NotesInput = MJBS.createInput("text");
